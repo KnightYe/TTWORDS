@@ -1,0 +1,21 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zhu.ttwords.activity.StudyActivity" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="@dimen/activity_study_mao_width"
+        android:layout_height="@dimen/activity_study_mao_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/image_mao"
+        android:src="@drawable/image_mao" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_study_viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+</RelativeLayout>

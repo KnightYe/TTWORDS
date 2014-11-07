@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- main activity -->
+    <string name="app_name">天天背单词</string>
+    <string name="activity_main_stady">背单词</string>
+    <string name="activity_main_review">复习</string>
+    <string name="activity_main_test">测试</string>
+    <string name="activity_main_translate">翻译</string>
+    <string name="activity_main_setting">设置</string>
+    <string name="activity_main_lookback">查看成绩</string>
+    <!-- main activity -->
+    <!-- loading activity -->
+    <string name="activity_loading">加载中。。。</string>
+    <!-- loading activity -->
+    <!-- image  contentDescription -->
+    <string name="image_user_photo">头像</string>
+    <string name="image_mao">猫猫</string>
+    <string name="image_loading">注意</string>
+    <!-- image  contentDescription -->
+
+</resources>

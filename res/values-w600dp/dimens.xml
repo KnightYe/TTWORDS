@@ -1,0 +1,14 @@
+<resources>
+
+    <!-- common -->
+    <dimen name="common_textsize_large">60sp</dimen>
+    <dimen name="common_textsize_middle">40sp</dimen>
+    <dimen name="common_textsize_small">32sp</dimen>
+    <dimen name="common_conner_small">12dip</dimen>
+    <!-- study -->
+    <dimen name="activity_study_marge_large">160dp</dimen>
+    <dimen name="activity_study_padding">24dp</dimen>
+    <dimen name="activity_study_mao_height">400dp</dimen>
+    <dimen name="activity_study_mao_width">300dp</dimen>
+
+</resources>

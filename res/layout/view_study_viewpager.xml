@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.zhu.ttwords.activity.StudyActivity" >
+
+    <ImageView
+        android:id="@+id/view_study_viewpager_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/view_study_viewpager_all"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_study_marge_large"
+        android:contentDescription="@string/image_mao"
+        android:src="@drawable/image_mark_attention"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/view_study_viewpager_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_study_marge_large" >
+
+        <TextView
+            android:id="@+id/view_study_viewpager_explain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/activity_study_padding"
+            android:singleLine="true"
+            android:text="中国人"
+            android:textSize="@dimen/common_textsize_large" />
+
+        <TextView
+            android:id="@+id/view_study_viewpager_pos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/activity_study_padding"
+            android:text="[名]"
+            android:textSize="@dimen/common_textsize_small" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/view_study_viewpager_down"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/view_study_viewpager_focus"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:focusableInTouchMode="true" >
+
+                    <requestFocus />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/view_study_viewpager_prono"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/activity_study_padding"
+                    android:singleLine="true"
+                    android:text="ちゅうごくじん"
+                    android:textSize="@dimen/common_textsize_middle" />
+
+                <EditText
+                    android:id="@+id/view_study_viewpager_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:inputType="text"
+                    android:padding="@dimen/activity_study_padding"
+                    android:singleLine="true"
+                    android:text="中国人"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/common_textsize_middle" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/view_study_viewpager_test"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:gravity="center"
+                android:inputType="text"
+                android:padding="@dimen/activity_study_padding"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textSize="@dimen/common_textsize_large"
+                android:visibility="invisible" />
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>
