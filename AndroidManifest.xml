@@ -12,15 +12,15 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name=".TTWORDS"
+        android:name="com.zhu.ttwords.TTWORDS"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name=".activity.MainActivity" >
+        <activity android:name="com.zhu.ttwords.activity.MainActivity" >
         </activity>
         <activity
-            android:name=".activity.LoadingActivity"
+            android:name="com.zhu.ttwords.activity.LoadingActivity"
             android:theme="@style/android:Theme.Holo.Light.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +29,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.StudyActivity"
+            android:name="com.zhu.ttwords.activity.StudyActivity"
             android:theme="@style/android:Theme.Holo.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize" >
         </activity>
-        <activity android:name=".activity.LoginActivity" >
+        <activity android:name="com.zhu.ttwords.activity.LoginActivity" >
+        </activity>
+        <activity
+            android:name="com.zhu.ttwords.activity.SettingActivity"
+            android:label="@string/title_activity_setting" >
         </activity>
     </application>
 

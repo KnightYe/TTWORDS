@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.zhu.ttwords.R;
@@ -34,7 +35,7 @@ public class StudyActivity extends Activity {
 	ViewHolder currentHolder;
 	Cursor cursor;
 	String group;// 学习一组单词有多少个
-	String totle;// 已经学习单词
+	String total;// 已经学习单词
 	String sql = "select * from TT_RESOURCE_JP LIMIT ?,?";
 	String params[] = new String[2];
 
@@ -49,8 +50,8 @@ public class StudyActivity extends Activity {
 		sp = getSharedPreferences("setting", MODE_PRIVATE);
 		group = sp.getString("WORDS_COUNT_PER_GROUP",
 				DefaultSetting.WORDS_COUNT_PER_GROUP);
-		totle = sp.getString("TOTLE", "0");
-		params[0] = totle;
+		total = sp.getString("TOTAL", "0");
+		params[0] = total;
 		params[1] = group;
 		try {
 			mData = DataHelpUtil.getDataBean(WordBean.class, sql, params);
@@ -70,9 +71,10 @@ public class StudyActivity extends Activity {
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		Log.d("DEBUG", "keyCode:" + keyCode + "    event:" + event.toString());
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_ENTER:
-			adapter.checkWord();
+			adapter.nextAction();
 			break;
 		}
 		return super.onKeyUp(keyCode, event);

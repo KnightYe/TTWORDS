@@ -5,8 +5,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.PorterDuff.Mode;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +28,13 @@ import com.zhu.ttwords.bean.WordBean;
 
 public class ViewPagerAdapter extends PagerAdapter implements
 		OnPageChangeListener {
-	public static final int LEARN = 0;
-	public static final int TEST = 1;
+	public static final int MODE_READY = 0X00;
+	public static final int MODE_LEARN = 0x10;
+	public static final int MODE_TEST = 0x20;
+	public static final int MODE_OVER = 0x30;
+	public static final int RESULT_UNDO = 0x00;
+	public static final int RESULT_WRONG = 0x01;
+	public static final int RESULT_RIGHT = 0x02;
 
 	List<AbstractCommonBean> mData;
 	Activity mContext;
@@ -38,6 +45,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	OnFocusChangeListener focusListener;
 	ViewHolder currentViewHolder;
 	int index = 1;
+	boolean hasNextStatus = false;
 
 	public ViewPagerAdapter(Activity context, List<AbstractCommonBean> mData) {
 		super();
@@ -50,58 +58,196 @@ public class ViewPagerAdapter extends PagerAdapter implements
 		this.inflater = LayoutInflater.from(mContext);
 		this.views = new SparseArray<ViewPagerAdapter.ViewHolder>();
 		this.resetListener = new OnLongClickListener() {
-
 			@Override
 			public boolean onLongClick(View v) {
-				currentViewHolder.status = LEARN;
-				updateView();
+				if (hasNextStatus) {
+					return true;
+				}
+				currentViewHolder.mode = MODE_READY;
+				currentViewHolder.result = RESULT_UNDO;
+				hasNextStatus = true;
+				updateStatusAndMode();
 				return true;
 			}
 		};
-		this.focusListener = new OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus) {
-					if (currentViewHolder.status == LEARN) {
-						currentViewHolder.content.setText("");
-						InputMethodManager inputMethodManager1 = (InputMethodManager) mContext
-								.getSystemService(Context.INPUT_METHOD_SERVICE);
-						inputMethodManager1.showSoftInput(
-								currentViewHolder.content,
-								InputMethodManager.HIDE_NOT_ALWAYS);
-						currentViewHolder.mark.setVisibility(View.VISIBLE);
-						if (currentViewHolder.result == 1) {
-							currentViewHolder.status = TEST;
-							updateView();
-						}
-					} else if (currentViewHolder.status == TEST) {
-						updateView();
-					}
-				}
-			}
-		};
 		this.clearListener = new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				if (currentViewHolder.result == 1) {
+				if (hasNextStatus || currentViewHolder.result == RESULT_RIGHT) {
 					return;
 				}
-				currentViewHolder.result = 0;
-				currentViewHolder.mark
-						.setImageResource(R.drawable.image_mark_attention);
-				if (currentViewHolder.status == LEARN) {
-					currentViewHolder.content.setText("");
-					currentViewHolder.content.requestFocus();
-				}
-				if (currentViewHolder.status == TEST) {
-					currentViewHolder.test.getText().clear();
-					currentViewHolder.test.requestFocus();
-				}
+				currentViewHolder.result = RESULT_UNDO;
+				hasNextStatus = true;
+				updateStatusAndMode();
 			}
 		};
+		this.focusListener = new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasNextStatus || !hasFocus) {
+					return;
+				}
+				if (v == currentViewHolder.content) {
+					if (currentViewHolder.result == RESULT_RIGHT) {
+						currentViewHolder.mode += 0x10;
+						currentViewHolder.result = RESULT_UNDO;
+					} else {
+						CharSequence question = currentViewHolder.content
+								.getHint().toString().trim();
+						CharSequence answer1 = currentViewHolder.content
+								.getText().toString().trim();
+						CharSequence answer2 = currentViewHolder.test.getText()
+								.toString().trim();
+						currentViewHolder.result = (question.equals(answer1)
+								|| (question.equals(answer2)) ? RESULT_RIGHT
+								: RESULT_WRONG);
 
+					}
+				} else if (v == currentViewHolder.test) {
+					if (currentViewHolder.result == RESULT_RIGHT) {
+						currentViewHolder.mode += 0x10;
+					} else {
+						CharSequence question = currentViewHolder.content
+								.getHint().toString().trim();
+						CharSequence answer1 = currentViewHolder.content
+								.getText().toString().trim();
+						CharSequence answer2 = currentViewHolder.test.getText()
+								.toString().trim();
+						currentViewHolder.result = (question.equals(answer1)
+								|| (question.equals(answer2)) ? RESULT_RIGHT
+								: RESULT_WRONG);
+					}
+				}
+
+				hasNextStatus = true;
+				updateStatusAndMode();
+			}
+		};
+	}
+
+	public boolean nextAction() {
+		if (currentViewHolder.result == 2) {
+			currentViewHolder.mode += 0x10;
+		} else {
+			CharSequence question = currentViewHolder.content.getHint()
+					.toString().trim();
+			CharSequence answer1 = currentViewHolder.content.getText()
+					.toString().trim();
+			CharSequence answer2 = currentViewHolder.test.getText().toString()
+					.trim();
+			currentViewHolder.result = (question.equals(answer1)
+					|| (question.equals(answer2)) ? RESULT_RIGHT : RESULT_WRONG);
+		}
+		hasNextStatus = true;
+		updateStatusAndMode();
+		return false;
+	}
+
+	private void updateStatusAndMode() {
+		switch (currentViewHolder.mode + currentViewHolder.result) {
+		case 0x00:
+		case 0x01:
+		case 0x02:
+			currentViewHolder.down.setVisibility(View.VISIBLE);
+			currentViewHolder.content.setText(currentViewHolder.content
+					.getHint());
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.requestFocus();
+			currentViewHolder.test.setAlpha(0);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_attention);
+			currentViewHolder.mark.setVisibility(View.INVISIBLE);
+			break;
+		case 0x10:
+			currentViewHolder.down.setVisibility(View.VISIBLE);
+			currentViewHolder.content.getText().clear();
+			currentViewHolder.content.requestFocus();
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.setAlpha(0);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_attention);
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			break;
+		case 0x11:
+			currentViewHolder.down.setVisibility(View.VISIBLE);
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.requestFocus();
+			currentViewHolder.test.setAlpha(0);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_wrong);
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			break;
+		case 0x12:
+			currentViewHolder.down.setVisibility(View.VISIBLE);
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.requestFocus();
+			currentViewHolder.test.setAlpha(0);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_right);
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			break;
+		case 0x20:
+			currentViewHolder.down.setVisibility(View.INVISIBLE);
+			currentViewHolder.content.getText().clear();
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.requestFocus();
+			currentViewHolder.test.setAlpha(1);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_attention);
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			break;
+		case 0x21:
+			currentViewHolder.down.setVisibility(View.INVISIBLE);
+			currentViewHolder.content.requestFocus();
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.setAlpha(1);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_wrong);
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			break;
+		case 0x22:
+			currentViewHolder.down.setVisibility(View.INVISIBLE);
+			currentViewHolder.content.requestFocus();
+			currentViewHolder.test.setFocusable(true);
+			currentViewHolder.test.setFocusableInTouchMode(true);
+			currentViewHolder.test.setAlpha(1);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_right);
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			break;
+
+		case 0x30:
+		case 0x31:
+		case 0x32:
+			// currentViewHolder.down.setVisibility(View.INVISIBLE);
+			currentViewHolder.down.setVisibility(View.INVISIBLE);
+			currentViewHolder.content.requestFocus();
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_right);
+			currentViewHolder.test.setAlpha(1);
+			currentViewHolder.test.setFocusable(false);
+			currentViewHolder.test.setFocusableInTouchMode(false);
+			currentViewHolder.test.setAlpha(1);// 开启下一单词
+			if (index < mData.size()) {
+				index++;
+				notifyDataSetChanged();
+			}
+			break;
+		}
+		hasNextStatus = false;
 	}
 
 	@Override
@@ -138,11 +284,9 @@ public class ViewPagerAdapter extends PagerAdapter implements
 					.findViewById(R.id.view_study_viewpager_pos);
 			holder.down = (LinearLayout) holder.all
 					.findViewById(R.id.view_study_viewpager_down);
-			holder.focus = (LinearLayout) holder.all
-					.findViewById(R.id.view_study_viewpager_focus);
 			holder.prono = (TextView) holder.all
 					.findViewById(R.id.view_study_viewpager_prono);
-			holder.content = (TextView) holder.all
+			holder.content = (EditText) holder.all
 					.findViewById(R.id.view_study_viewpager_content);
 			holder.test = (EditText) holder.all
 					.findViewById(R.id.view_study_viewpager_test);
@@ -158,93 +302,19 @@ public class ViewPagerAdapter extends PagerAdapter implements
 		holder.explain.setText(bean.getExplain());
 		holder.pos.setText(bean.getPos());
 		holder.prono.setText(bean.getPronounce());
-		holder.content.setText(bean.getContent());
 		holder.content.setHint(bean.getContent());
+		holder.content.setText(bean.getContent());
 		holder.content.setOnFocusChangeListener(focusListener);
-		// holder.content.setInputType(InputType.TYPE_CLASS_TEXT
-		// | InputType.TYPE_TEXT_VARIATION_NORMAL);
 		holder.mark.setOnClickListener(clearListener);
 		holder.mark.setOnLongClickListener(resetListener);
+		holder.test.setOnFocusChangeListener(focusListener);
 		holder.test.setHint(bean.getContent());
+		holder.test.setNextFocusDownId(holder.content.getId());
 		container.addView(holder.all);
 		if (currentViewHolder == null) {
 			currentViewHolder = holder;
 		}
 		return holder.all;
-	}
-
-	private void updateView() {
-
-		switch (currentViewHolder.status) {
-		case LEARN:
-			currentViewHolder.down.setVisibility(View.VISIBLE);
-			currentViewHolder.content.setVisibility(View.VISIBLE);
-			currentViewHolder.test.setVisibility(View.INVISIBLE);
-			currentViewHolder.mark.setVisibility(View.INVISIBLE);
-			break;
-		case TEST:
-			currentViewHolder.down.setVisibility(View.INVISIBLE);
-			currentViewHolder.content.setVisibility(View.INVISIBLE);
-			currentViewHolder.test.setVisibility(View.VISIBLE);
-			currentViewHolder.mark.setVisibility(View.VISIBLE);
-			currentViewHolder.result = 0;
-			currentViewHolder.mark
-					.setImageResource(R.drawable.image_mark_attention);
-			currentViewHolder.test.requestFocus();
-			// InputMethodManager inputMethodManager1 = (InputMethodManager)
-			// mContext
-			// .getSystemService(Context.INPUT_METHOD_SERVICE);
-			// inputMethodManager1.showSoftInput(currentViewHolder.test,
-			// InputMethodManager.SHOW_FORCED);
-			break;
-		}
-	}
-
-	public boolean checkWord() {
-		CharSequence content = currentViewHolder.content.getHint().toString()
-				.trim();
-		CharSequence answer1 = currentViewHolder.content.getText().toString()
-				.trim();
-		CharSequence answer2 = currentViewHolder.test.getText().toString()
-				.trim();
-		boolean result = false;
-		if (currentViewHolder.status == LEARN) {
-			result = content.equals(answer1);
-		} else if (currentViewHolder.status == TEST) {
-			result = content.equals(answer2);
-			if (result) {
-				currentViewHolder.test.setFocusable(false);
-				if (index < mData.size()) {
-					index++;
-					notifyDataSetChanged();
-				}
-			}
-		}
-		currentViewHolder.result = result ? 1 : 2;
-		currentViewHolder.mark
-				.setImageResource(result ? R.drawable.image_mark_right
-						: R.drawable.image_mark_wrong);
-		currentViewHolder.focus.requestFocus();
-		InputMethodManager inputMethodManager1 = (InputMethodManager) mContext
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		inputMethodManager1.showSoftInput(currentViewHolder.focus,
-				InputMethodManager.SHOW_FORCED);
-		return result;
-	}
-
-	// 半角转化为全角的方法
-	public CharSequence ToSBC(CharSequence input) {
-		// 半角转全角：
-		StringBuilder tmep = new StringBuilder(input);
-		for (int i = 0; i < tmep.length(); i++) {
-			if (tmep.charAt(i) == 32) {
-				tmep.setCharAt(i, (char) 12288);
-				continue;
-			}
-			if (tmep.charAt(i) < 127 && tmep.charAt(i) > 32)
-				tmep.setCharAt(i, (char) (tmep.charAt(i) + 65248));
-		}
-		return tmep.toString();
 	}
 
 	@Override
@@ -270,12 +340,11 @@ public class ViewPagerAdapter extends PagerAdapter implements
 		TextView explain;
 		TextView pos;
 		TextView prono;
-		TextView content;
+		EditText content;
 		LinearLayout down;
-		LinearLayout focus;
 		EditText test;
-		int status = 0;
-		int result = 0;// 0未写，1正确，2错误
+		int mode = 0x00;
+		int result = 0x02;// 0未写，1正确，2错误
 	}
 
 }

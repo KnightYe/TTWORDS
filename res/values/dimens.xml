@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- common -->
@@ -10,5 +11,7 @@
     <dimen name="activity_study_mao_width">150dp</dimen>
     <dimen name="activity_study_marge_large">80dp</dimen>
     <dimen name="activity_study_padding">12dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

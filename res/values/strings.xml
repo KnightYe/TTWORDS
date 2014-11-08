@@ -19,4 +19,8 @@
     <string name="image_loading">注意</string>
     <!-- image  contentDescription -->
 
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

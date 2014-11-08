@@ -1,40 +1,21 @@
 package com.zhu.ttwords;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Message;
-import android.util.SparseArray;
 
-import com.zhu.ttwords.common.ReceiveMessageListener;
-import com.zhu.ttwords.value.WHAT;
+import com.zhu.ttwords.common.MessageHandler;
 
 public class TTWORDS extends Application {
 
-	private static Handler handler;
-	public static SparseArray<ReceiveMessageListener> mReceiveMessageListenerMap = new SparseArray<ReceiveMessageListener>();
+	private static MessageHandler handler;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		handler = new TTWORDSHandler();
+		handler = new MessageHandler();
 	}
 
-	public static Handler getHandler() {
+	public static MessageHandler getHandler() {
 		return handler;
 	}
 
-	public static void setHandler(Handler handler) {
-		TTWORDS.handler = handler;
-	}
-
-	private static class TTWORDSHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case WHAT.LOADINGACTIVITY:
-				mReceiveMessageListenerMap.get(msg.what).onReceivedMessage(msg);
-				break;
-			}
-		}
-	}
 }

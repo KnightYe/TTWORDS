@@ -45,7 +45,25 @@
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+
+            <requestFocus />
+
+            <EditText
+                android:id="@+id/view_study_viewpager_test"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0"
+                android:background="@null"
+                android:gravity="center"
+                android:inputType="text"
+                android:padding="@dimen/activity_study_padding"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textSize="@dimen/common_textsize_large" />
 
             <LinearLayout
                 android:id="@+id/view_study_viewpager_down"
@@ -54,15 +72,6 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical" >
-
-                <LinearLayout
-                    android:id="@+id/view_study_viewpager_focus"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:focusableInTouchMode="true" >
-
-                    <requestFocus />
-                </LinearLayout>
 
                 <TextView
                     android:id="@+id/view_study_viewpager_prono"
@@ -80,26 +89,13 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:inputType="text"
+                    android:nextFocusDown="@id/view_study_viewpager_test"
                     android:padding="@dimen/activity_study_padding"
                     android:singleLine="true"
                     android:text="中国人"
                     android:textAlignment="center"
                     android:textSize="@dimen/common_textsize_middle" />
             </LinearLayout>
-
-            <EditText
-                android:id="@+id/view_study_viewpager_test"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@null"
-                android:gravity="center"
-                android:inputType="text"
-                android:padding="@dimen/activity_study_padding"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:textSize="@dimen/common_textsize_large"
-                android:visibility="invisible" />
         </FrameLayout>
     </LinearLayout>
 

@@ -17,6 +17,7 @@ import com.zhu.ttwords.R;
 import com.zhu.ttwords.TTWORDS;
 import com.zhu.ttwords.bean.InformationBean;
 import com.zhu.ttwords.bean.UserBean;
+import com.zhu.ttwords.common.MessageHandler;
 import com.zhu.ttwords.util.DataHelpUtil;
 import com.zhu.ttwords.value.DefaultSetting;
 import com.zhu.ttwords.value.WHAT;
@@ -26,7 +27,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 	public static final Long loadTime = 1500l;
 	SharedPreferences sp;
 	Editor editor;
-	Handler handler;// 接受消息，发送消息用
 	Runnable readDB;// 读取数据库线程
 	Animation rotateAnimation;
 	ImageView image;// 载入图片
@@ -63,8 +63,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 				.findViewById(R.id.activity_loading);
 		this.rotateAnimation = AnimationUtils.loadAnimation(
 				LoadingActivity.this, R.anim.loading_animation);
-		this.handler = TTWORDS.getHandler();
-		this.registerHandler(WHAT.LOADINGACTIVITY, this);
 		this.readDB = new Runnable() {
 			@Override
 			public void run() {
@@ -76,6 +74,8 @@ public class LoadingActivity extends AbstractCommonActivity {
 		};
 		new Thread(readDB).start();
 		/*****/
+		setHandler(TTWORDS.getHandler());
+		getHandler().setiOnReceiveMessageListener(this);
 		image.startAnimation(rotateAnimation);
 
 	}
@@ -94,7 +94,7 @@ public class LoadingActivity extends AbstractCommonActivity {
 			editor.putString("PASSWORD", "");
 			editor.putString("WORDS_COUNT_PER_GROUP",
 					DefaultSetting.WORDS_COUNT_PER_GROUP);
-			editor.putString("TOTLE", "0");
+			editor.putString("TOTAL", "0");
 
 			editor.commit();
 		}
@@ -151,8 +151,14 @@ public class LoadingActivity extends AbstractCommonActivity {
 				e.printStackTrace();
 			}
 		}
-		Message msg = handler.obtainMessage(WHAT.LOADINGACTIVITY, RESULT_OK, 0);
-		handler.sendMessage(msg);
+		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
+				RESULT_OK, 0);
+		getHandler().sendMessage(msg);
+	}
+
+	@Override
+	public int getMessageWHAT() {
+		return WHAT.LOADINGACTIVITY;
 	}
 
 	@Override

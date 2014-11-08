@@ -24,6 +24,11 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 
+	public void setting(View v) {
+		Intent intent = new Intent(this, SettingActivity.class);
+		startActivity(intent);
+	}
+
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub

@@ -78,14 +78,14 @@ public class RepertoryBean extends AbstractCommonBean {
 
 	@Override
 	public AbstractCommonBean buildFromCursor(Cursor cur) {
-		this.setTable(cur.getString(cur.getColumnIndex("COUNT")));
-		this.setwId(cur.getInt(cur.getColumnIndex("COUNT")));
-		this.setuId(cur.getString(cur.getColumnIndex("COUNT")));
-		this.setRight(cur.getInt(cur.getColumnIndex("COUNT")));
-		this.setWrong(cur.getInt(cur.getColumnIndex("COUNT")));
-		this.setStatus(cur.getString(cur.getColumnIndex("COUNT")));
-		this.setCreate_time(cur.getString(cur.getColumnIndex("COUNT")));
-		this.setUpdate_time(cur.getString(cur.getColumnIndex("COUNT")));
+		this.setTable(cur.getString(cur.getColumnIndex("TABLE_NAME")));
+		this.setwId(cur.getInt(cur.getColumnIndex("WID")));
+		this.setuId(cur.getString(cur.getColumnIndex("UID")));
+		this.setRight(cur.getInt(cur.getColumnIndex("COUNT_RIGHT")));
+		this.setWrong(cur.getInt(cur.getColumnIndex("COUNT_WRONG")));
+		this.setStatus(cur.getString(cur.getColumnIndex("STATUS")));
+		this.setCreate_time(cur.getString(cur.getColumnIndex("CREATE_DATE")));
+		this.setUpdate_time(cur.getString(cur.getColumnIndex("IPDATE_DATE")));
 		return this;
 	}
 }

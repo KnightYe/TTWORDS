@@ -1,25 +1,35 @@
 package com.zhu.ttwords.activity;
 
-import com.zhu.ttwords.TTWORDS;
-import com.zhu.ttwords.common.ReceiveMessageListener;
-import com.zhu.ttwords.value.WHAT;
-
 import android.app.Activity;
-import android.os.Bundle;
 import android.os.Message;
 
+import com.zhu.ttwords.common.IOnReceiveMessageListener;
+import com.zhu.ttwords.common.MessageHandler;
+
 public abstract class AbstractCommonActivity extends Activity implements
-		ReceiveMessageListener {
+		IOnReceiveMessageListener {
 
+	private MessageHandler handler;
+
+	public MessageHandler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(MessageHandler handler) {
+		this.handler = handler;
+	}
+
+	/**
+	 * 如果使用handler需要覆盖此方法
+	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public int getMessageWHAT() {
+		return 0;
 	}
 
-	public void registerHandler(int key, ReceiveMessageListener listener) {
-		TTWORDS.mReceiveMessageListenerMap.put(WHAT.LOADINGACTIVITY, this);
-	}
-
+	/**
+	 * 如果使用handler需要覆盖此方法
+	 */
 	@Override
 	public void onReceivedMessage(Message msg) {
 

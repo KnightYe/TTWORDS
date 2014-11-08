@@ -78,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_common_button"
+            android:onClick="setting"
             android:text="@string/activity_main_setting" />
     </LinearLayout>
 
