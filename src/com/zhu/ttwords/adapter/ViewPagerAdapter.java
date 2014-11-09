@@ -1,14 +1,15 @@
 package com.zhu.ttwords.adapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.PorterDuff.Mode;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +24,10 @@ import android.widget.TextView;
 
 import com.zhu.ttwords.R;
 import com.zhu.ttwords.bean.AbstractCommonBean;
+import com.zhu.ttwords.bean.RepertoryBean;
 import com.zhu.ttwords.bean.WordBean;
+import com.zhu.ttwords.util.DataHelpUtil;
+import com.zhu.ttwords.util.DateUtil;
 
 public class ViewPagerAdapter extends PagerAdapter implements
 		OnPageChangeListener {
@@ -65,7 +68,6 @@ public class ViewPagerAdapter extends PagerAdapter implements
 				}
 				currentViewHolder.mode = MODE_READY;
 				currentViewHolder.result = RESULT_RIGHT;
-				hasNextStatus = true;
 				updateStatusAndMode();
 				return true;
 			}
@@ -77,7 +79,6 @@ public class ViewPagerAdapter extends PagerAdapter implements
 					return;
 				}
 				currentViewHolder.result = RESULT_UNDO;
-				hasNextStatus = true;
 				updateStatusAndMode();
 			}
 		};
@@ -122,14 +123,13 @@ public class ViewPagerAdapter extends PagerAdapter implements
 								: RESULT_WRONG);
 					}
 				}
-
-				hasNextStatus = true;
 				updateStatusAndMode();
 			}
 		};
 	}
 
 	private void updateStatusAndMode() {
+		this.hasNextStatus = true;
 		switch (currentViewHolder.mode + currentViewHolder.result) {
 		case 0x00:
 		case 0x01:
@@ -231,9 +231,24 @@ public class ViewPagerAdapter extends PagerAdapter implements
 				index++;
 				notifyDataSetChanged();
 			}
+			saveWord();
 			break;
 		}
 		hasNextStatus = false;
+	}
+
+	private long saveWord() {
+
+		String create_date = DateUtil.getCurrentDate();
+		RepertoryBean bean = new RepertoryBean();
+		bean.setTable("TT_RESOURCE_JP");
+		bean.setWid(((WordBean) mData.get(index)).getWid());
+		bean.setCount_right(0);
+		bean.setCount_wrong(0);
+		bean.setStatus("0");
+		bean.setCreate_date(create_date);
+		bean.setUpdate_date(create_date);
+		return DataHelpUtil.saveBeanData("TT_REPERTORY_JP", bean);
 	}
 
 	@Override

@@ -1,24 +1,30 @@
 package com.zhu.ttwords.activity;
 
+import java.util.UUID;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zhu.ttwords.R;
 import com.zhu.ttwords.TTWORDS;
 import com.zhu.ttwords.bean.InformationBean;
 import com.zhu.ttwords.bean.UserBean;
-import com.zhu.ttwords.common.MessageHandler;
 import com.zhu.ttwords.util.DataHelpUtil;
+import com.zhu.ttwords.util.DateUtil;
 import com.zhu.ttwords.value.DefaultSetting;
 import com.zhu.ttwords.value.WHAT;
 
@@ -29,17 +35,24 @@ public class LoadingActivity extends AbstractCommonActivity {
 	Editor editor;
 	Runnable readDB;// 读取数据库线程
 	Animation rotateAnimation;
+	Animation hideAnimation;
 	ImageView image;// 载入图片
-	TextView text;// 状态说明文字
+	TextView loading_text;// 状态说明文字
+	EditText user_tel;
+	EditText password;
+	Button submit;
+	Button regeist;
+	OnClickListener regeistListener;
+	OnClickListener submitListener;
 	Long startTime = 0l;// 程序开始时间
 	Long endTime = 0l;// 载入完毕时间
 	TelephonyManager phoneMgr;
 	String sql_user;
 	String sql_relation;
 	String sql_count_relation;
-	String username;
-	String password;
-	String tel;
+	String text_telphone;
+	String text_password;
+	String text_tel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +68,53 @@ public class LoadingActivity extends AbstractCommonActivity {
 		this.sp = getSharedPreferences("setting", MODE_PRIVATE);
 		this.phoneMgr = (TelephonyManager) this
 				.getSystemService(TELEPHONY_SERVICE);
-		this.tel = phoneMgr.getLine1Number();
+		this.text_tel = phoneMgr.getLine1Number();
+		this.text_tel = text_tel.substring(2);
 		this.startTime = System.currentTimeMillis();
-		this.text = (TextView) LoadingActivity.this
+		this.loading_text = (TextView) LoadingActivity.this
 				.findViewById(R.id.activity_loading_text);
 		this.image = (ImageView) LoadingActivity.this
 				.findViewById(R.id.activity_loading);
+		this.user_tel = (EditText) this
+				.findViewById(R.id.activity_loading_user);
+		this.password = (EditText) this
+				.findViewById(R.id.activity_loading_password);
+		this.submit = (Button) this.findViewById(R.id.activity_loading_submit);
+		this.regeist = (Button) this
+				.findViewById(R.id.activity_loading_regeist);
 		this.rotateAnimation = AnimationUtils.loadAnimation(
 				LoadingActivity.this, R.anim.loading_animation);
+		this.hideAnimation = AnimationUtils.loadAnimation(LoadingActivity.this,
+				R.anim.show_login_animation);
+		this.submitListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				text_telphone = user_tel.getText().toString();
+				text_password = password.getText().toString();
+				login();
+			}
+		};
+		this.regeistListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				text_telphone = text_tel;
+				text_password = text_tel;
+				UserBean bean = new UserBean();
+				bean.setUid(UUID.randomUUID().toString());
+				bean.setCreate_date(DateUtil.getCurrentDate());
+				bean.setTel(text_tel);
+				bean.setIntegral(0);
+				bean.setStudy_time(0f);
+				bean.setEmail("");
+				bean.setUname(text_telphone);
+				bean.setPassword(text_password);
+				DataHelpUtil.saveBeanData("TT_USER", bean);
+				login();
+
+			}
+		};
 		this.readDB = new Runnable() {
 			@Override
 			public void run() {
@@ -74,6 +126,8 @@ public class LoadingActivity extends AbstractCommonActivity {
 		};
 		new Thread(readDB).start();
 		/*****/
+		this.submit.setOnClickListener(submitListener);
+		this.regeist.setOnClickListener(regeistListener);
 		setHandler(TTWORDS.getHandler());
 		getHandler().setiOnReceiveMessageListener(this);
 		image.startAnimation(rotateAnimation);
@@ -105,43 +159,61 @@ public class LoadingActivity extends AbstractCommonActivity {
 		sql_relation = "SELECT * FROM TT_REPERTORY_JP WHERE  TABLE_NAME = 'TT_RESOURCE_JP' AND UID = ?; ";
 		sql_count_relation = "SELECT count(*) AS 'COUNT' FROM TT_REPERTORY_JP;";
 		// 登录
-		username = sp.getString("TEL", "");
-		password = sp.getString("PASSWORD", "");
-		if (!username.equals("") && !password.equals("")) {
-			UserBean bean = null;
-			try {
-				bean = (UserBean) DataHelpUtil.getDataBean(UserBean.class,
-						sql_user, new String[] { username, password });
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			if (bean == null) {
-				Log.d("DEBUG", "login wrong");
-				Intent intent = new Intent(this, LoginActivity.class);
-				startActivity(intent);
-			}
-			Log.d("DEBUG", "login success");
+		text_telphone = sp.getString("TEL", "");
+		// 获取记录的用户名密码，如果有，则认为是老用户，如果没有，就认为第一次登录
+		if (!text_telphone.equals("")) {
+			text_password = sp.getString("PASSWORD", "");
+			login();
 		}
-		// 登录成功则读取user数据库信息，存入配置文件
-		// 已经学过的单词数。
-		InformationBean bean_info = null;
+		// 没存储用户名，可能为第一次登录
+		checkDelayTime();
+		jumpToLogin();
+	}
+
+	private void login() {
+		UserBean bean = null;
 		try {
-			bean_info = (InformationBean) DataHelpUtil.getSingleBean(
-					InformationBean.class, sql_count_relation);
+			bean = (UserBean) DataHelpUtil.getSingleBean(UserBean.class,
+					sql_user, new String[] { text_telphone, text_password });
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		editor = sp.edit();
-		editor.putString("TOTLE", bean_info.getCount());
-		editor.commit();
-		sendCompleteMessage();
+		if (bean != null) {
+			Log.d("DEBUG", "login success");
+			// 登录成功则读取user数
+			InformationBean bean_info = null;
+			try {
+				bean_info = (InformationBean) DataHelpUtil.getSingleBean(
+						InformationBean.class, sql_count_relation);
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			editor = sp.edit();
+			editor.putString("TOTLE", bean_info.getCount());
+			editor.commit();
+			checkDelayTime();
+			sendCompleteMessage();
+			return;
+		} else {
+			// 用户名密码错误
+			Toast.makeText(this, R.string.activity_loading_waring,
+					Toast.LENGTH_SHORT).show();
+			password.getText().clear();
+			password.requestFocus();
+		}
 	}
 
-	private void sendCompleteMessage() {
+	private void jumpToLogin() {
+		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
+				RESULT_CANCELED, 0);
+		getHandler().sendMessage(msg);
+	}
+
+	private void checkDelayTime() {
 
 		endTime = System.currentTimeMillis();
 		if (endTime - startTime < loadTime) {
@@ -151,6 +223,10 @@ public class LoadingActivity extends AbstractCommonActivity {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void sendCompleteMessage() {
+
 		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
 				RESULT_OK, 0);
 		getHandler().sendMessage(msg);
@@ -169,7 +245,14 @@ public class LoadingActivity extends AbstractCommonActivity {
 			intent.setClass(LoadingActivity.this, MainActivity.class);
 			LoadingActivity.this.startActivity(intent);
 			LoadingActivity.this.finish();
+			break;
+		case RESULT_CANCELED:
+			rotateAnimation.cancel();
+			image.startAnimation(hideAnimation);
+			image.setVisibility(View.INVISIBLE);
+			loading_text.setVisibility(View.INVISIBLE);
 		}
+
 	}
 
 }

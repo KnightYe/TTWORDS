@@ -11,7 +11,10 @@
     <string name="activity_main_lookback">查看成绩</string>
     <!-- main activity -->
     <!-- loading activity -->
-    <string name="activity_loading">加载中。。。</string>
+    <string name="activity_loading_info">加载中。。。</string>
+    <string name="activity_loading_submit">登录</string>
+    <string name="activity_loading_regeist">一键注册</string>
+    <string name="activity_loading_waring">用户名或密码不匹配。</string>
     <!-- loading activity -->
     <!-- image  contentDescription -->
     <string name="image_user_photo">头像</string>

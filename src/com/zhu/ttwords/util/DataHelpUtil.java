@@ -44,13 +44,6 @@ public class DataHelpUtil extends DataBaseUtil {
 		Cursor cur = getDatabase().rawQuery(sql, params);
 		while (cur.moveToNext()) {
 			AbstractCommonBean bean = (AbstractCommonBean) clazz.newInstance();
-			// Field[] fields = clazz.getDeclaredFields();
-			// for (Field field : fields) {
-			// field.setAccessible(true);
-			// String name = field.getName();
-			// String type = field.getGenericType().toString();
-			// String empt = "123";
-			// }
 			try {
 				list.add(CursorUtil.cursorToBena(cur, clazz));
 			} catch (Exception e) {
@@ -61,8 +54,24 @@ public class DataHelpUtil extends DataBaseUtil {
 
 	}
 
-	public long saveBeanData(String Table, AbstractCommonBean bean) {
-		return getDatabase().insert(Table, null, null);
+	public static long saveBeanData(String Table, AbstractCommonBean bean) {
+		try {
+			return getDatabase().insert(Table, null,
+					CursorUtil.beanToContentValues(bean));
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	/**

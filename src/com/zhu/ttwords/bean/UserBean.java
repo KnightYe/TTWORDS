@@ -1,16 +1,15 @@
 package com.zhu.ttwords.bean;
 
-
-public class UserBean extends AbstractCommonBean{
+public class UserBean extends AbstractCommonBean {
 
 	String uid;
 	String uname;
 	String password;
 	String email;
 	String tel;
-	String integral;
-	String study_time;
-	String create_time;
+	int integral;
+	float study_time;
+	String create_date;
 
 	public String getUid() {
 		return uid;
@@ -36,28 +35,28 @@ public class UserBean extends AbstractCommonBean{
 		this.email = email;
 	}
 
-	public String getIntegral() {
+	public int getIntegral() {
 		return integral;
 	}
 
-	public void setIntegral(String integral) {
+	public void setIntegral(int integral) {
 		this.integral = integral;
 	}
 
-	public String getStudy_time() {
+	public float getStudy_time() {
 		return study_time;
 	}
 
-	public void setStudy_time(String study_time) {
+	public void setStudy_time(float study_time) {
 		this.study_time = study_time;
 	}
 
-	public String getCreate_time() {
-		return create_time;
+	public String getCreate_date() {
+		return create_date;
 	}
 
-	public void setCreate_time(String create_time) {
-		this.create_time = create_time;
+	public void setCreate_date(String create_date) {
+		this.create_date = create_date;
 	}
 
 	public String getUname() {

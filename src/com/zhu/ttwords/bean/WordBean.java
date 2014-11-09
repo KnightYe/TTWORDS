@@ -1,18 +1,17 @@
 package com.zhu.ttwords.bean;
 
-
-public class WordBean  extends AbstractCommonBean{
-	String wid;
+public class WordBean extends AbstractCommonBean {
+	int wid;
 	String content;
 	String explain;
 	String pos;
 	String pronounce;
 
-	public String getWid() {
+	public int getWid() {
 		return wid;
 	}
 
-	public void setWid(String wid) {
+	public void setWid(int wid) {
 		this.wid = wid;
 	}
 

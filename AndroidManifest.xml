@@ -33,8 +33,6 @@
             android:theme="@style/android:Theme.Holo.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize" >
         </activity>
-        <activity android:name="com.zhu.ttwords.activity.LoginActivity" >
-        </activity>
         <activity
             android:name="com.zhu.ttwords.activity.SettingActivity"
             android:label="@string/title_activity_setting" >
