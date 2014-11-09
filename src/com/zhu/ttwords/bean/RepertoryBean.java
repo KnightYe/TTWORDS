@@ -1,16 +1,15 @@
 package com.zhu.ttwords.bean;
 
-import android.database.Cursor;
 
-public class RepertoryBean extends AbstractCommonBean {
+public class RepertoryBean extends AbstractCommonBean{
 	String table;
-	int wId;
-	String uId;
-	int right;
-	int wrong;
+	int wid;
+	String uid;
+	int count_right;
+	int count_wrong;
 	String status;
-	String create_time;
-	String update_time;
+	String create_date;
+	String update_date;
 
 	public String getTable() {
 		return table;
@@ -20,36 +19,36 @@ public class RepertoryBean extends AbstractCommonBean {
 		this.table = table;
 	}
 
-	public int getwId() {
-		return wId;
+	public int getWid() {
+		return wid;
 	}
 
-	public void setwId(int wId) {
-		this.wId = wId;
+	public void setWid(int wid) {
+		this.wid = wid;
 	}
 
-	public String getuId() {
-		return uId;
+	public String getUid() {
+		return uid;
 	}
 
-	public void setuId(String uId) {
-		this.uId = uId;
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
-	public int getRight() {
-		return right;
+	public int getCount_right() {
+		return count_right;
 	}
 
-	public void setRight(int right) {
-		this.right = right;
+	public void setCount_right(int count_right) {
+		this.count_right = count_right;
 	}
 
-	public int getWrong() {
-		return wrong;
+	public int getCount_wrong() {
+		return count_wrong;
 	}
 
-	public void setWrong(int wrong) {
-		this.wrong = wrong;
+	public void setCount_wrong(int count_wrong) {
+		this.count_wrong = count_wrong;
 	}
 
 	public String getStatus() {
@@ -60,32 +59,20 @@ public class RepertoryBean extends AbstractCommonBean {
 		this.status = status;
 	}
 
-	public String getCreate_time() {
-		return create_time;
+	public String getCreate_date() {
+		return create_date;
 	}
 
-	public void setCreate_time(String create_time) {
-		this.create_time = create_time;
+	public void setCreate_date(String create_date) {
+		this.create_date = create_date;
 	}
 
-	public String getUpdate_time() {
-		return update_time;
+	public String getUpdate_date() {
+		return update_date;
 	}
 
-	public void setUpdate_time(String update_time) {
-		this.update_time = update_time;
+	public void setUpdate_date(String update_date) {
+		this.update_date = update_date;
 	}
 
-	@Override
-	public AbstractCommonBean buildFromCursor(Cursor cur) {
-		this.setTable(cur.getString(cur.getColumnIndex("TABLE_NAME")));
-		this.setwId(cur.getInt(cur.getColumnIndex("WID")));
-		this.setuId(cur.getString(cur.getColumnIndex("UID")));
-		this.setRight(cur.getInt(cur.getColumnIndex("COUNT_RIGHT")));
-		this.setWrong(cur.getInt(cur.getColumnIndex("COUNT_WRONG")));
-		this.setStatus(cur.getString(cur.getColumnIndex("STATUS")));
-		this.setCreate_time(cur.getString(cur.getColumnIndex("CREATE_DATE")));
-		this.setUpdate_time(cur.getString(cur.getColumnIndex("IPDATE_DATE")));
-		return this;
-	}
 }

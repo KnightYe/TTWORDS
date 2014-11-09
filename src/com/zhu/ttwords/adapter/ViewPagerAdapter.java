@@ -64,7 +64,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 					return true;
 				}
 				currentViewHolder.mode = MODE_READY;
-				currentViewHolder.result = RESULT_UNDO;
+				currentViewHolder.result = RESULT_RIGHT;
 				hasNextStatus = true;
 				updateStatusAndMode();
 				return true;
@@ -91,6 +91,8 @@ public class ViewPagerAdapter extends PagerAdapter implements
 					if (currentViewHolder.result == RESULT_RIGHT) {
 						currentViewHolder.mode += 0x10;
 						currentViewHolder.result = RESULT_UNDO;
+					} else if (currentViewHolder.result == RESULT_WRONG) {
+						currentViewHolder.result = RESULT_UNDO;
 					} else {
 						CharSequence question = currentViewHolder.content
 								.getHint().toString().trim();
@@ -106,6 +108,8 @@ public class ViewPagerAdapter extends PagerAdapter implements
 				} else if (v == currentViewHolder.test) {
 					if (currentViewHolder.result == RESULT_RIGHT) {
 						currentViewHolder.mode += 0x10;
+					} else if (currentViewHolder.result == RESULT_WRONG) {
+						currentViewHolder.result = RESULT_UNDO;
 					} else {
 						CharSequence question = currentViewHolder.content
 								.getHint().toString().trim();
@@ -123,24 +127,6 @@ public class ViewPagerAdapter extends PagerAdapter implements
 				updateStatusAndMode();
 			}
 		};
-	}
-
-	public boolean nextAction() {
-		if (currentViewHolder.result == 2) {
-			currentViewHolder.mode += 0x10;
-		} else {
-			CharSequence question = currentViewHolder.content.getHint()
-					.toString().trim();
-			CharSequence answer1 = currentViewHolder.content.getText()
-					.toString().trim();
-			CharSequence answer2 = currentViewHolder.test.getText().toString()
-					.trim();
-			currentViewHolder.result = (question.equals(answer1)
-					|| (question.equals(answer2)) ? RESULT_RIGHT : RESULT_WRONG);
-		}
-		hasNextStatus = true;
-		updateStatusAndMode();
-		return false;
 	}
 
 	private void updateStatusAndMode() {

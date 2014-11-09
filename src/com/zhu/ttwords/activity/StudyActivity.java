@@ -69,15 +69,4 @@ public class StudyActivity extends Activity {
 		viewPager.setOnPageChangeListener(adapter);
 	}
 
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		Log.d("DEBUG", "keyCode:" + keyCode + "    event:" + event.toString());
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_ENTER:
-			adapter.nextAction();
-			break;
-		}
-		return super.onKeyUp(keyCode, event);
-	}
-
 }

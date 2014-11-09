@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +44,25 @@ public class DataHelpUtil extends DataBaseUtil {
 		Cursor cur = getDatabase().rawQuery(sql, params);
 		while (cur.moveToNext()) {
 			AbstractCommonBean bean = (AbstractCommonBean) clazz.newInstance();
-			list.add(bean.buildFromCursor(cur));
+			// Field[] fields = clazz.getDeclaredFields();
+			// for (Field field : fields) {
+			// field.setAccessible(true);
+			// String name = field.getName();
+			// String type = field.getGenericType().toString();
+			// String empt = "123";
+			// }
+			try {
+				list.add(CursorUtil.cursorToBena(cur, clazz));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return list;
 
+	}
+
+	public long saveBeanData(String Table, AbstractCommonBean bean) {
+		return getDatabase().insert(Table, null, null);
 	}
 
 	/**

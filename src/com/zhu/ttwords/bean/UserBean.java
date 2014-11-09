@@ -1,32 +1,23 @@
 package com.zhu.ttwords.bean;
 
-import android.database.Cursor;
 
-public class UserBean extends AbstractCommonBean {
+public class UserBean extends AbstractCommonBean{
 
-	String UID;
-	String name;
+	String uid;
+	String uname;
 	String password;
 	String email;
-	String phone;
+	String tel;
 	String integral;
 	String study_time;
 	String create_time;
 
-	public String getUID() {
-		return UID;
+	public String getUid() {
+		return uid;
 	}
 
-	public void setUID(String uID) {
-		UID = uID;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 
 	public String getPassword() {
@@ -43,14 +34,6 @@ public class UserBean extends AbstractCommonBean {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 
 	public String getIntegral() {
@@ -77,17 +60,20 @@ public class UserBean extends AbstractCommonBean {
 		this.create_time = create_time;
 	}
 
-	@Override
-	public AbstractCommonBean buildFromCursor(Cursor cur) {
-		this.setUID(cur.getString(cur.getColumnIndex("UID")));
-		this.setName(cur.getString(cur.getColumnIndex("UNAME")));
-		this.setPassword(cur.getString(cur.getColumnIndex("PASSWORD")));
-		this.setEmail(cur.getString(cur.getColumnIndex("EMAIL")));
-		this.setPhone(cur.getString(cur.getColumnIndex("TEL")));
-		this.setIntegral(cur.getString(cur.getColumnIndex("INTEGRAL")));
-		this.setStudy_time(cur.getString(cur.getColumnIndex("STUDY_TIME")));
-		this.setCreate_time(cur.getString(cur.getColumnIndex("CREATE_TIME")));
-		return this;
+	public String getUname() {
+		return uname;
+	}
+
+	public void setUname(String uname) {
+		this.uname = uname;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
 	}
 
 }

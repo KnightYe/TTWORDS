@@ -1,13 +1,12 @@
 package com.zhu.ttwords.bean;
 
-import android.database.Cursor;
 
-public class WordBean extends AbstractCommonBean {
+public class WordBean  extends AbstractCommonBean{
 	String wid;
 	String content;
+	String explain;
 	String pos;
 	String pronounce;
-	String explain;
 
 	public String getWid() {
 		return wid;
@@ -49,13 +48,4 @@ public class WordBean extends AbstractCommonBean {
 		this.explain = explain;
 	}
 
-	@Override
-	public AbstractCommonBean buildFromCursor(Cursor cur) {
-		this.setWid(cur.getString(cur.getColumnIndex("WID")));
-		this.setContent(cur.getString(cur.getColumnIndex("CONTENT")));
-		this.setExplain(cur.getString(cur.getColumnIndex("EXPLAIN")));
-		this.setPos(cur.getString(cur.getColumnIndex("POS")));
-		this.setPronounce(cur.getString(cur.getColumnIndex("PRONOUNCE")));
-		return this;
-	}
 }
