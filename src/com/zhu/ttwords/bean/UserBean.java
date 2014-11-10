@@ -2,22 +2,14 @@ package com.zhu.ttwords.bean;
 
 public class UserBean extends AbstractCommonBean {
 
-	String uid;
-	String uname;
+	String username;
 	String password;
+	String showname;
 	String email;
 	String tel;
 	int integral;
 	float study_time;
 	String create_date;
-
-	public String getUid() {
-		return uid;
-	}
-
-	public void setUid(String uid) {
-		this.uid = uid;
-	}
 
 	public String getPassword() {
 		return password;
@@ -59,12 +51,20 @@ public class UserBean extends AbstractCommonBean {
 		this.create_date = create_date;
 	}
 
-	public String getUname() {
-		return uname;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUname(String uname) {
-		this.uname = uname;
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getShowname() {
+		return showname;
+	}
+
+	public void setShowname(String showname) {
+		this.showname = showname;
 	}
 
 	public String getTel() {

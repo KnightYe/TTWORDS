@@ -7,7 +7,7 @@ import java.util.Locale;
 public class DateUtil {
 
 	public static String getCurrentDate() {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd",
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss",
 				Locale.getDefault());// 设置日期格式
 		return df.format(new Date());
 	}

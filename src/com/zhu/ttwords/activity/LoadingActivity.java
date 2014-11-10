@@ -50,7 +50,7 @@ public class LoadingActivity extends AbstractCommonActivity {
 	String sql_user;
 	String sql_relation;
 	String sql_count_relation;
-	String text_telphone;
+	String text_username;
 	String text_password;
 	String text_tel;
 
@@ -61,6 +61,7 @@ public class LoadingActivity extends AbstractCommonActivity {
 		init();
 	}
 
+	
 	/**
 	 * 判断数据库是否存在？存在的话:不存在的话写入数据库
 	 */
@@ -69,7 +70,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 		this.phoneMgr = (TelephonyManager) this
 				.getSystemService(TELEPHONY_SERVICE);
 		this.text_tel = phoneMgr.getLine1Number();
-		this.text_tel = text_tel.substring(2);
 		this.startTime = System.currentTimeMillis();
 		this.loading_text = (TextView) LoadingActivity.this
 				.findViewById(R.id.activity_loading_text);
@@ -90,7 +90,7 @@ public class LoadingActivity extends AbstractCommonActivity {
 
 			@Override
 			public void onClick(View v) {
-				text_telphone = user_tel.getText().toString();
+				text_username = user_tel.getText().toString();
 				text_password = password.getText().toString();
 				login();
 			}
@@ -99,16 +99,16 @@ public class LoadingActivity extends AbstractCommonActivity {
 
 			@Override
 			public void onClick(View v) {
-				text_telphone = text_tel;
-				text_password = text_tel;
+				text_username = UUID.randomUUID().toString();
+				text_password = text_username.substring(0, 6);
 				UserBean bean = new UserBean();
-				bean.setUid(UUID.randomUUID().toString());
 				bean.setCreate_date(DateUtil.getCurrentDate());
 				bean.setTel(text_tel);
 				bean.setIntegral(0);
 				bean.setStudy_time(0f);
-				bean.setEmail("");
-				bean.setUname(text_telphone);
+				bean.setEmail(null);
+				bean.setUsername(text_username);
+				bean.setShowname(text_username);
 				bean.setPassword(text_password);
 				DataHelpUtil.saveBeanData("TT_USER", bean);
 				login();
@@ -155,13 +155,13 @@ public class LoadingActivity extends AbstractCommonActivity {
 	}
 
 	private void initInfo() {
-		sql_user = "SELECT* FROM TT_USER WHERE TEL = ? AND PASSWORD = ?;";
-		sql_relation = "SELECT * FROM TT_REPERTORY_JP WHERE  TABLE_NAME = 'TT_RESOURCE_JP' AND UID = ?; ";
+		sql_user = "SELECT* FROM TT_USER WHERE USERNAME = ? AND PASSWORD = ?;";
+		sql_relation = "SELECT * FROM TT_REPERTORY_JP WHERE  TABLE_NAME = 'TT_RESOURCE_JP' AND USERNAME = ?; ";
 		sql_count_relation = "SELECT count(*) AS 'COUNT' FROM TT_REPERTORY_JP;";
 		// 登录
-		text_telphone = sp.getString("TEL", "");
+		text_username = sp.getString("USERNAME", "");
 		// 获取记录的用户名密码，如果有，则认为是老用户，如果没有，就认为第一次登录
-		if (!text_telphone.equals("")) {
+		if (!text_username.equals("")) {
 			text_password = sp.getString("PASSWORD", "");
 			login();
 		}
@@ -174,7 +174,7 @@ public class LoadingActivity extends AbstractCommonActivity {
 		UserBean bean = null;
 		try {
 			bean = (UserBean) DataHelpUtil.getSingleBean(UserBean.class,
-					sql_user, new String[] { text_telphone, text_password });
+					sql_user, new String[] { text_username, text_password });
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -194,6 +194,13 @@ public class LoadingActivity extends AbstractCommonActivity {
 			}
 			editor = sp.edit();
 			editor.putString("TOTLE", bean_info.getCount());
+			editor.putString("USERNAME", bean.getUsername());
+			editor.putString("PASSWORD", bean.getPassword());
+			editor.putString("SHOWNAME", text_username);
+			editor.putString("EMAIL", bean.getEmail());
+			editor.putString("TEL", bean.getTel());
+			editor.putFloat("STUDY_TIME", bean.getStudy_time());
+			editor.putString("CREATE_DATE", bean.getCreate_date());
 			editor.commit();
 			checkDelayTime();
 			sendCompleteMessage();
