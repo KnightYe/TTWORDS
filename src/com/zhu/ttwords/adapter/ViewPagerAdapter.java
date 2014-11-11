@@ -47,6 +47,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	OnFocusChangeListener focusListener;
 	ViewHolder currentViewHolder;
 	int index = 1;
+	int current_index = 1;
 	boolean hasNextStatus = false;
 
 	public ViewPagerAdapter(Activity context, List<AbstractCommonBean> mData) {
@@ -227,11 +228,11 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.test.setFocusable(false);
 			currentViewHolder.test.setFocusableInTouchMode(false);
 			currentViewHolder.test.setAlpha(1);// 开启下一单词
-			if (index < mData.size()) {
+			if (current_index == getCount()) {
+				saveWord();
 				index++;
 				notifyDataSetChanged();
 			}
-			saveWord();
 			break;
 		}
 		hasNextStatus = false;
@@ -241,8 +242,8 @@ public class ViewPagerAdapter extends PagerAdapter implements
 
 		String create_date = DateUtil.getCurrentDate();
 		RepertoryBean bean = new RepertoryBean();
-		bean.setTable("TT_RESOURCE_JP");
-		bean.setWid(((WordBean) mData.get(index)).getWid());
+		bean.setTname("TT_RESOURCE_JP");
+		bean.setWid(((WordBean) mData.get(getCount() - 1)).getWid());
 		bean.setUid(sp.getString("USERNAME", null));
 		bean.setStatus("0");
 		bean.setCount_right(0);
@@ -328,6 +329,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	@Override
 	public void onPageSelected(int position) {
 		this.currentViewHolder = views.get(position);
+		this.current_index = position + 1;
 	}
 
 	@Override

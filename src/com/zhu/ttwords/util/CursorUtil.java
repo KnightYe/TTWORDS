@@ -23,7 +23,7 @@ public class CursorUtil {
 					+ name.substring(1);
 			String type = field.getGenericType().toString();
 			if (type.equals("int")) {
-				Method m = clazz.getMethod("set" + name, Integer.class);
+				Method m = clazz.getMethod("set" + name, int.class);
 				int param = cur.getInt(cur.getColumnIndex(name
 						.toUpperCase(Locale.getDefault())));
 				m.invoke(bean, param);
@@ -33,7 +33,7 @@ public class CursorUtil {
 						.toUpperCase(Locale.getDefault())));
 				m.invoke(bean, param);
 			} else if (type.equals("float")) {
-				Method m = clazz.getMethod("set" + name, Float.class);
+				Method m = clazz.getMethod("set" + name, float.class);
 				float param = cur.getFloat(cur.getColumnIndex(name
 						.toUpperCase(Locale.getDefault())));
 				m.invoke(bean, param);

@@ -3,14 +3,13 @@ package com.zhu.ttwords.activity;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import com.zhu.ttwords.R;
 import com.zhu.ttwords.adapter.ViewPagerAdapter;
-import com.zhu.ttwords.adapter.ViewPagerAdapter.ViewHolder;
 import com.zhu.ttwords.bean.AbstractCommonBean;
 import com.zhu.ttwords.bean.WordBean;
 import com.zhu.ttwords.util.DataHelpUtil;
@@ -18,24 +17,15 @@ import com.zhu.ttwords.value.DefaultSetting;
 
 public class StudyActivity extends Activity {
 
-	public static final int LEARN = 0;
-	public static final int TEST = 1;
-	public static final int RIGHT = 2;
-	public static final int WRONG = 3;
-	public static final int ATTENTION = 4;
-
-	SharedPreferences sp;
 	ViewPager viewPager;
 	ViewPagerAdapter adapter;
 	List<AbstractCommonBean> mData;
-	int currentPosition;
-	int currentStatus;
-	ViewHolder currentHolder;
-	Cursor cursor;
+	SharedPreferences sp;
+	String username;
 	String group;// 学习一组单词有多少个
-	String total;// 已经学习单词
-	String sql = "select * from TT_RESOURCE_JP LIMIT ?,?";
-	String params[] = new String[2];
+	String sql = "select * from TT_RESOURCE_JP  WHERE WID NOT IN (SELECT WID FROM TT_REPERTORY_JP WHERE UID= ?) LIMIT ?,?";
+
+	String params[] = new String[3];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +35,14 @@ public class StudyActivity extends Activity {
 	}
 
 	private void init() {
+		Intent intent = getIntent();
 		sp = getSharedPreferences("setting", MODE_PRIVATE);
+		username = sp.getString("USERNAME", null);
 		group = sp.getString("WORDS_COUNT_PER_GROUP",
 				DefaultSetting.WORDS_COUNT_PER_GROUP);
-		total = sp.getString("TOTAL", "0");
-		params[0] = total;
-		params[1] = group;
+		params[0] = username;
+		params[1] = "0";
+		params[2] = group;
 		try {
 			mData = DataHelpUtil.getDataBean(WordBean.class, sql, params);
 		} catch (InstantiationException e) {
@@ -66,5 +58,4 @@ public class StudyActivity extends Activity {
 		viewPager.setAdapter(adapter);
 		viewPager.setOnPageChangeListener(adapter);
 	}
-
 }

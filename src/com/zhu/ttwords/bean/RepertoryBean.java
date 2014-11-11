@@ -1,8 +1,7 @@
 package com.zhu.ttwords.bean;
 
-
-public class RepertoryBean extends AbstractCommonBean{
-	String table;
+public class RepertoryBean extends AbstractCommonBean {
+	String tname;
 	int wid;
 	String uid;
 	int count_right;
@@ -11,12 +10,12 @@ public class RepertoryBean extends AbstractCommonBean{
 	String create_date;
 	String update_date;
 
-	public String getTable() {
-		return table;
+	public String getTname() {
+		return tname;
 	}
 
-	public void setTable(String table) {
-		this.table = table;
+	public void setTname(String tname) {
+		this.tname = tname;
 	}
 
 	public int getWid() {

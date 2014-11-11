@@ -19,22 +19,35 @@
             android:contentDescription="@string/image_user_photo"
             android:src="@drawable/image_main_user_photo1" />
 
-        <LinearLayout
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:orientation="vertical" >
+            android:columnCount="2"
+            android:rowCount="2" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="掌握单词：100" />
+                android:text="@string/activity_main_learn" />
+
+            <TextView
+                android:id="@+id/activity_main_learn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="待复习单词：20" />
-        </LinearLayout>
+                android:text="@string/activity_main_reviews" />
+
+            <TextView
+                android:id="@+id/activity_main_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20" />
+        </GridLayout>
     </LinearLayout>
 
     <LinearLayout

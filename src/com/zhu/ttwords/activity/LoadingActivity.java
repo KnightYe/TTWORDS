@@ -48,8 +48,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 	Long endTime = 0l;// 载入完毕时间
 	TelephonyManager phoneMgr;
 	String sql_user;
-	String sql_relation;
-	String sql_count_relation;
 	String text_username;
 	String text_password;
 	String text_tel;
@@ -61,7 +59,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 		init();
 	}
 
-	
 	/**
 	 * 判断数据库是否存在？存在的话:不存在的话写入数据库
 	 */
@@ -128,8 +125,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 		/*****/
 		this.submit.setOnClickListener(submitListener);
 		this.regeist.setOnClickListener(regeistListener);
-		setHandler(TTWORDS.getHandler());
-		getHandler().setiOnReceiveMessageListener(this);
 		image.startAnimation(rotateAnimation);
 
 	}
@@ -144,20 +139,17 @@ public class LoadingActivity extends AbstractCommonActivity {
 		// 如果没有DB，没有DB目录，则认为是新安装。
 		if (!hasDir && !hasDB) {
 			editor = sp.edit();
-			editor.putString("TEL", "");
-			editor.putString("PASSWORD", "");
+			editor.putString("USERNAME", null);
+			editor.putString("PASSWORD", null);
+			editor.putString("TEL", null);
 			editor.putString("WORDS_COUNT_PER_GROUP",
 					DefaultSetting.WORDS_COUNT_PER_GROUP);
-			editor.putString("TOTAL", "0");
-
 			editor.commit();
 		}
 	}
 
 	private void initInfo() {
 		sql_user = "SELECT* FROM TT_USER WHERE USERNAME = ? AND PASSWORD = ?;";
-		sql_relation = "SELECT * FROM TT_REPERTORY_JP WHERE  TABLE_NAME = 'TT_RESOURCE_JP' AND USERNAME = ?; ";
-		sql_count_relation = "SELECT count(*) AS 'COUNT' FROM TT_REPERTORY_JP;";
 		// 登录
 		text_username = sp.getString("USERNAME", "");
 		// 获取记录的用户名密码，如果有，则认为是老用户，如果没有，就认为第一次登录
@@ -167,7 +159,9 @@ public class LoadingActivity extends AbstractCommonActivity {
 		}
 		// 没存储用户名，可能为第一次登录
 		checkDelayTime();
-		jumpToLogin();
+
+		Message msg = getMessage(RESULT_FIRST_USER);
+		msg.sendToTarget();
 	}
 
 	private void login() {
@@ -182,40 +176,35 @@ public class LoadingActivity extends AbstractCommonActivity {
 		}
 		if (bean != null) {
 			Log.d("DEBUG", "login success");
-			// 登录成功则读取user数
-			InformationBean bean_info = null;
-			try {
-				bean_info = (InformationBean) DataHelpUtil.getSingleBean(
-						InformationBean.class, sql_count_relation);
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			}
+		
 			editor = sp.edit();
-			editor.putString("TOTLE", bean_info.getCount());
 			editor.putString("USERNAME", bean.getUsername());
 			editor.putString("PASSWORD", bean.getPassword());
-			editor.putString("SHOWNAME", text_username);
+			editor.putString("SHOWNAME", bean.getShowname());
 			editor.putString("EMAIL", bean.getEmail());
 			editor.putString("TEL", bean.getTel());
 			editor.putFloat("STUDY_TIME", bean.getStudy_time());
 			editor.putString("CREATE_DATE", bean.getCreate_date());
 			editor.commit();
 			checkDelayTime();
-			sendCompleteMessage();
+			loginSuccess();
 			return;
 		} else {
-			// 用户名密码错误
-			Toast.makeText(this, R.string.activity_loading_waring,
-					Toast.LENGTH_SHORT).show();
-			password.getText().clear();
-			password.requestFocus();
+			loginFail();
 		}
 	}
 
-	private void checkDelayTime() {
+	private void loginFail() {
+		Message msg = getMessage(RESULT_CANCELED);
+		msg.sendToTarget();
+	}
 
+	private void loginSuccess() {
+		Message msg = getMessage(RESULT_OK);
+		msg.sendToTarget();
+	}
+
+	private void checkDelayTime() {
 		endTime = System.currentTimeMillis();
 		if (endTime - startTime < loadTime) {
 			try {
@@ -226,27 +215,9 @@ public class LoadingActivity extends AbstractCommonActivity {
 		}
 	}
 
-	private void jumpToLogin() {
-		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
-				RESULT_CANCELED, 0);
-		getHandler().sendMessage(msg);
-	}
-
-	private void sendCompleteMessage() {
-
-		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
-				RESULT_OK, 0);
-		getHandler().sendMessage(msg);
-	}
-
 	@Override
-	public int getMessageWHAT() {
-		return WHAT.LOADINGACTIVITY;
-	}
-
-	@Override
-	public void onReceivedMessage(Message msg) {
-		switch (msg.arg1) {
+	public boolean handleMessage(Message msg) {
+		switch (msg.what) {
 		case RESULT_OK:
 			Intent intent = new Intent();
 			intent.setClass(LoadingActivity.this, MainActivity.class);
@@ -254,12 +225,20 @@ public class LoadingActivity extends AbstractCommonActivity {
 			LoadingActivity.this.finish();
 			break;
 		case RESULT_CANCELED:
+			// 用户名密码错误
+			Toast.makeText(this, R.string.activity_loading_waring,
+					Toast.LENGTH_SHORT).show();
+			password.getText().clear();
+			password.requestFocus();
+			break;
+		case RESULT_FIRST_USER:
 			rotateAnimation.cancel();
 			image.startAnimation(hideAnimation);
 			image.setVisibility(View.INVISIBLE);
 			loading_text.setVisibility(View.INVISIBLE);
+			break;
 		}
-
+		return true;
 	}
 
 }

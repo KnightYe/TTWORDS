@@ -54,19 +54,15 @@ public class DataHelpUtil extends DataBaseUtil {
 
 	public static long saveBeanData(String Table, AbstractCommonBean bean) {
 		try {
-			return getDatabase().insert(Table, null,
+			return getDatabase().insert(Table, "UID",
 					CursorUtil.beanToContentValues(bean));
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;
