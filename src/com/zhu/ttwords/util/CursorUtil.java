@@ -11,7 +11,7 @@ import android.database.Cursor;
 import com.zhu.ttwords.bean.AbstractCommonBean;
 
 public class CursorUtil {
-	public static AbstractCommonBean cursorToBena(Cursor cur, Class<?> clazz)
+	public static AbstractCommonBean cursorToBean(Cursor cur, Class<?> clazz)
 			throws InstantiationException, IllegalAccessException,
 			NoSuchMethodException, IllegalArgumentException,
 			InvocationTargetException {
@@ -22,7 +22,7 @@ public class CursorUtil {
 			name = name.substring(0, 1).toUpperCase(Locale.getDefault())
 					+ name.substring(1);
 			String type = field.getGenericType().toString();
-			if (type.equals("class java.lang.Integer")) {
+			if (type.equals("int")) {
 				Method m = clazz.getMethod("set" + name, Integer.class);
 				int param = cur.getInt(cur.getColumnIndex(name
 						.toUpperCase(Locale.getDefault())));
@@ -32,8 +32,8 @@ public class CursorUtil {
 				String param = cur.getString(cur.getColumnIndex(name
 						.toUpperCase(Locale.getDefault())));
 				m.invoke(bean, param);
-			} else if (type.equals("class java.lang.Float")) {
-				Method m = clazz.getMethod("set" + name, Integer.class);
+			} else if (type.equals("float")) {
+				Method m = clazz.getMethod("set" + name, Float.class);
 				float param = cur.getFloat(cur.getColumnIndex(name
 						.toUpperCase(Locale.getDefault())));
 				m.invoke(bean, param);
@@ -57,8 +57,7 @@ public class CursorUtil {
 				Integer value = (Integer) m.invoke(bean);
 				values.put(name.toUpperCase(Locale.getDefault()), value);
 			} else if (type.equals("class java.lang.String")) {
-				Method m = bean.getClass()
-						.getMethod("get" + name);
+				Method m = bean.getClass().getMethod("get" + name);
 				String value = (String) m.invoke(bean);
 				values.put(name.toUpperCase(Locale.getDefault()), value);
 			} else if (type.equals("class java.lang.Float")) {

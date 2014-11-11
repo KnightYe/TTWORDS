@@ -11,11 +11,11 @@ public abstract class AbstractCommonActivity extends Activity implements
 
 	private MessageHandler handler;
 
-	public MessageHandler getHandler() {
+	MessageHandler getHandler() {
 		return handler;
 	}
 
-	public void setHandler(MessageHandler handler) {
+	void setHandler(MessageHandler handler) {
 		this.handler = handler;
 	}
 

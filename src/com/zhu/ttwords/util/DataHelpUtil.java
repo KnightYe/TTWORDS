@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +42,8 @@ public class DataHelpUtil extends DataBaseUtil {
 		List<AbstractCommonBean> list = new ArrayList<AbstractCommonBean>();
 		Cursor cur = getDatabase().rawQuery(sql, params);
 		while (cur.moveToNext()) {
-			AbstractCommonBean bean = (AbstractCommonBean) clazz.newInstance();
 			try {
-				list.add(CursorUtil.cursorToBena(cur, clazz));
+				list.add(CursorUtil.cursorToBean(cur, clazz));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -110,6 +108,7 @@ public class DataHelpUtil extends DataBaseUtil {
 						localFileOutputStream.flush();
 						localFileOutputStream.close();
 						localInputStream.close();
+						break;
 					}
 					localFileOutputStream.write(arrayOfByte, 0, i);
 				}

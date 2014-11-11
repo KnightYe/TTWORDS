@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.KeyEvent;
 
 import com.zhu.ttwords.R;
 import com.zhu.ttwords.adapter.ViewPagerAdapter;

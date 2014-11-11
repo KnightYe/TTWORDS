@@ -1,13 +1,11 @@
 package com.zhu.ttwords.adapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.SparseArray;
@@ -39,6 +37,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	public static final int RESULT_WRONG = 0x01;
 	public static final int RESULT_RIGHT = 0x02;
 
+	SharedPreferences sp;
 	List<AbstractCommonBean> mData;
 	Activity mContext;
 	LayoutInflater inflater;
@@ -53,6 +52,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	public ViewPagerAdapter(Activity context, List<AbstractCommonBean> mData) {
 		super();
 		this.mContext = context;
+		sp = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
 		if (mData != null) {
 			this.mData = mData;
 		} else {
@@ -243,9 +243,10 @@ public class ViewPagerAdapter extends PagerAdapter implements
 		RepertoryBean bean = new RepertoryBean();
 		bean.setTable("TT_RESOURCE_JP");
 		bean.setWid(((WordBean) mData.get(index)).getWid());
+		bean.setUid(sp.getString("USERNAME", null));
+		bean.setStatus("0");
 		bean.setCount_right(0);
 		bean.setCount_wrong(0);
-		bean.setStatus("0");
 		bean.setCreate_date(create_date);
 		bean.setUpdate_date(create_date);
 		return DataHelpUtil.saveBeanData("TT_REPERTORY_JP", bean);

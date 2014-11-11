@@ -1,21 +1,13 @@
 package com.zhu.ttwords.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-
-import com.zhu.ttwords.bean.AbstractCommonBean;
 
 public class DataBaseUtil extends DatabaseUtils {
 

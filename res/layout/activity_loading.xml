@@ -12,6 +12,15 @@
         android:gravity="center"
         android:orientation="vertical" >
 
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="0dip"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+
+            <requestFocus />
+        </LinearLayout>
+
         <EditText
             android:id="@+id/activity_loading_user"
             android:layout_width="wrap_content"

@@ -214,12 +214,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 		}
 	}
 
-	private void jumpToLogin() {
-		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
-				RESULT_CANCELED, 0);
-		getHandler().sendMessage(msg);
-	}
-
 	private void checkDelayTime() {
 
 		endTime = System.currentTimeMillis();
@@ -230,6 +224,12 @@ public class LoadingActivity extends AbstractCommonActivity {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void jumpToLogin() {
+		Message msg = getHandler().obtainMessage(WHAT.LOADINGACTIVITY,
+				RESULT_CANCELED, 0);
+		getHandler().sendMessage(msg);
 	}
 
 	private void sendCompleteMessage() {
