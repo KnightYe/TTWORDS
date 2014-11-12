@@ -1,7 +1,23 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar"></style>
 
-    <style name="AppTheme" parent="AppBaseTheme"></style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>
+    </style>
+
+    <style name="CustomActionBarStyle" parent="@android:style/Widget.ActionBar">
+
+        <!-- Change action bar background color -->
+        <item name="android:background">@color/basic_dark</item>
+        <!-- Change split action bar background color -->
+        <item name="android:titleTextStyle">@style/CustomTitleTextStyle</item>
+    </style>
+
+    <style name="CustomTitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+
+        <!-- 字体颜色 -->
+        <item name="android:textColor">@color/text_dark_inverse</item>
+    </style>
 
 </resources>
