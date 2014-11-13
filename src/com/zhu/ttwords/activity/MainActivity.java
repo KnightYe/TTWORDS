@@ -59,6 +59,12 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DataHelpUtil.close();
+	}
+
+	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		switch (keyCode) {

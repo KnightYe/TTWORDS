@@ -132,4 +132,9 @@ public class DataHelpUtil extends DataBaseUtil {
 		}
 		return getDatabase().getVersion() == appVersion;
 	}
+
+	public static void close() {
+		getDatabase().close();
+		db = null;
+	}
 }
