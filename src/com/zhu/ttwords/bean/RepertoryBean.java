@@ -4,11 +4,29 @@ public class RepertoryBean extends AbstractCommonBean {
 	String tname;
 	int wid;
 	String uid;
-	int count_right;
-	int count_wrong;
-	String status;
+	int countw;
+	int countall;
+	int countn;
+	int level;
+	float ef;
 	String create_date;
 	String update_date;
+
+	public int getCountw() {
+		return countw;
+	}
+
+	public void setCountw(int countw) {
+		this.countw = countw;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
 	public String getTname() {
 		return tname;
@@ -34,28 +52,28 @@ public class RepertoryBean extends AbstractCommonBean {
 		this.uid = uid;
 	}
 
-	public int getCount_right() {
-		return count_right;
+	public int getCountall() {
+		return countall;
 	}
 
-	public void setCount_right(int count_right) {
-		this.count_right = count_right;
+	public void setCountall(int countall) {
+		this.countall = countall;
 	}
 
-	public int getCount_wrong() {
-		return count_wrong;
+	public int getCountn() {
+		return countn;
 	}
 
-	public void setCount_wrong(int count_wrong) {
-		this.count_wrong = count_wrong;
+	public void setCountn(int countn) {
+		this.countn = countn;
 	}
 
-	public String getStatus() {
-		return status;
+	public float getEf() {
+		return ef;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setEf(float ef) {
+		this.ef = ef;
 	}
 
 	public String getCreate_date() {

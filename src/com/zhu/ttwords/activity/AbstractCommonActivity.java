@@ -1,12 +1,14 @@
 package com.zhu.ttwords.activity;
 
+import com.zhu.ttwords.common.IMessageFactory;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
 public abstract class AbstractCommonActivity extends Activity implements
-		Handler.Callback {
+		Handler.Callback, IMessageFactory {
 	private Handler mHandler;
 
 	@Override
@@ -15,7 +17,7 @@ public abstract class AbstractCommonActivity extends Activity implements
 		mHandler = new Handler(this);
 	}
 
-	protected Message getMessage(int what) {
+	public Message getMessage(int what) {
 		return mHandler.obtainMessage(what);
 	}
 }

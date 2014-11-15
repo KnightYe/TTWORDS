@@ -4,18 +4,38 @@
     android:layout_height="match_parent"
     tools:context="com.zhu.ttwords.activity.StudyActivity" >
 
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="@dimen/activity_study_mao_width"
-        android:layout_height="@dimen/activity_study_mao_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:contentDescription="@string/image_mao"
-        android:src="@drawable/image_mao" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/activity_study_viewpager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
+    <TextView
+        android:id="@+id/activity_study_showmode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="@dimen/common_margin_LR"
+        android:paddingRight="@dimen/common_margin_LR"
+        android:text="学习模式" />
+
+    <TextView
+        android:id="@+id/activity_study_index_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/activity_study_showmode"
+        android:layout_alignParentRight="true"
+        android:paddingBottom="@dimen/common_margin_LR"
+        android:paddingRight="@dimen/common_margin_LR"
+        android:text="1/20" />
+
+    <ImageView
+        android:id="@+id/activity_study_mao"
+        android:layout_width="@dimen/activity_study_mao_width"
+        android:layout_height="@dimen/activity_study_mao_height"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/image_mao"
+        android:src="@drawable/image_mao" />
 </RelativeLayout>

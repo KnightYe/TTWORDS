@@ -3,12 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingBottom="@dimen/common_margin_LR"
+    android:paddingLeft="@dimen/common_margin_LR"
+    android:paddingRight="@dimen/common_margin_LR"
+    android:paddingTop="@dimen/common_margin_LR"
     tools:context="com.zhu.ttwords.activity.MainActivity" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dip"
         android:orientation="horizontal" >
 
         <ImageView
@@ -22,8 +25,8 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:columnCount="2"
+            android:padding="10dp"
             android:rowCount="2" >
 
             <TextView
@@ -63,17 +66,6 @@
             android:onClick="study"
             android:text="@string/activity_main_stady" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_common_button"
-            android:text="@string/activity_main_review" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_common_button"
-            android:text="@string/activity_main_test" />
 
         <Button
             android:layout_width="match_parent"

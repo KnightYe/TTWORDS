@@ -6,8 +6,10 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +26,12 @@ import com.zhu.ttwords.R;
 import com.zhu.ttwords.bean.AbstractCommonBean;
 import com.zhu.ttwords.bean.RepertoryBean;
 import com.zhu.ttwords.bean.WordBean;
+import com.zhu.ttwords.common.IMessageFactory;
 import com.zhu.ttwords.util.DataHelpUtil;
 import com.zhu.ttwords.util.DateUtil;
+import com.zhu.ttwords.value.SQLS;
 
-public class ViewPagerAdapter extends PagerAdapter implements
-		OnPageChangeListener {
+public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 	public static final int MODE_READY = 0X00;
 	public static final int MODE_LEARN = 0x10;
 	public static final int MODE_TEST = 0x20;
@@ -37,40 +40,40 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	public static final int RESULT_WRONG = 0x01;
 	public static final int RESULT_RIGHT = 0x02;
 
-	SharedPreferences sp;
 	List<AbstractCommonBean> mData;
-	Activity mContext;
+	Context mContext;
+	IMessageFactory mMessageFactory;
 	LayoutInflater inflater;
 	SparseArray<ViewHolder> views;
 	OnClickListener clearListener;
 	OnLongClickListener resetListener;
 	OnFocusChangeListener focusListener;
 	ViewHolder currentViewHolder;
-	int index = 1;
 	int current_index = 1;
 	boolean hasNextStatus = false;
 
-	public ViewPagerAdapter(Activity context, List<AbstractCommonBean> mData) {
+	public StudyAdapter(Context context, List<AbstractCommonBean> mData,
+			IMessageFactory messageFactory) {
 		super();
 		this.mContext = context;
-		sp = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
+		this.mMessageFactory = messageFactory;
 		if (mData != null) {
 			this.mData = mData;
 		} else {
 			this.mData = new ArrayList<AbstractCommonBean>();
 		}
 		this.inflater = LayoutInflater.from(mContext);
-		this.views = new SparseArray<ViewPagerAdapter.ViewHolder>();
+		this.views = new SparseArray<StudyAdapter.ViewHolder>();
 		this.resetListener = new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
 				if (hasNextStatus) {
 					return true;
 				}
-				currentViewHolder.mode = MODE_READY;
+				currentViewHolder.level = MODE_READY;
 				currentViewHolder.result = RESULT_RIGHT;
 				updateStatusAndMode();
-				return true;
+				return false;
 			}
 		};
 		this.clearListener = new OnClickListener() {
@@ -91,7 +94,11 @@ public class ViewPagerAdapter extends PagerAdapter implements
 				}
 				if (v == currentViewHolder.content) {
 					if (currentViewHolder.result == RESULT_RIGHT) {
-						currentViewHolder.mode += 0x10;
+						if (currentViewHolder.level <= 0x20) {
+							currentViewHolder.level += 0x10;
+						} else {
+							currentViewHolder.level = 0x30;
+						}
 						currentViewHolder.result = RESULT_UNDO;
 					} else if (currentViewHolder.result == RESULT_WRONG) {
 						currentViewHolder.result = RESULT_UNDO;
@@ -109,9 +116,14 @@ public class ViewPagerAdapter extends PagerAdapter implements
 					}
 				} else if (v == currentViewHolder.test) {
 					if (currentViewHolder.result == RESULT_RIGHT) {
-						currentViewHolder.mode += 0x10;
+						if (currentViewHolder.level <= 0x20) {
+							currentViewHolder.level += 0x10;
+						} else {
+							currentViewHolder.level = 0x30;
+						}
 					} else if (currentViewHolder.result == RESULT_WRONG) {
 						currentViewHolder.result = RESULT_UNDO;
+
 					} else {
 						CharSequence question = currentViewHolder.content
 								.getHint().toString().trim();
@@ -131,7 +143,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 
 	private void updateStatusAndMode() {
 		this.hasNextStatus = true;
-		switch (currentViewHolder.mode + currentViewHolder.result) {
+		switch (currentViewHolder.level + currentViewHolder.result) {
 		case 0x00:
 		case 0x01:
 		case 0x02:
@@ -146,6 +158,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_attention);
 			currentViewHolder.mark.setVisibility(View.INVISIBLE);
+			Log.d("MODE", "0x02");
 			break;
 		case 0x10:
 			currentViewHolder.down.setVisibility(View.VISIBLE);
@@ -158,6 +171,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_attention);
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			Log.d("MODE", "0x10");
 			break;
 		case 0x11:
 			currentViewHolder.down.setVisibility(View.VISIBLE);
@@ -169,6 +183,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_wrong);
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			Log.d("MODE", "0x11");
 			break;
 		case 0x12:
 			currentViewHolder.down.setVisibility(View.VISIBLE);
@@ -180,6 +195,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_right);
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			Log.d("MODE", "0x12");
 			break;
 		case 0x20:
 			currentViewHolder.down.setVisibility(View.INVISIBLE);
@@ -192,6 +208,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_attention);
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			Log.d("MODE", "0x20");
 			break;
 		case 0x21:
 			currentViewHolder.down.setVisibility(View.INVISIBLE);
@@ -203,64 +220,46 @@ public class ViewPagerAdapter extends PagerAdapter implements
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_wrong);
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			Log.d("MODE", "0x21");
 			break;
 		case 0x22:
-			currentViewHolder.down.setVisibility(View.INVISIBLE);
-			currentViewHolder.content.requestFocus();
-			currentViewHolder.test.setFocusable(true);
-			currentViewHolder.test.setFocusableInTouchMode(true);
-			currentViewHolder.test.setAlpha(1);
-			currentViewHolder.mark
-					.setImageResource(R.drawable.image_mark_right);
-			currentViewHolder.mark.setVisibility(View.VISIBLE);
-			break;
+			// currentViewHolder.down.setVisibility(View.INVISIBLE);
+			// currentViewHolder.content.requestFocus();
+			// currentViewHolder.test.setFocusable(true);
+			// currentViewHolder.test.setFocusableInTouchMode(true);
+			// currentViewHolder.test.setAlpha(1);
+			// currentViewHolder.mark
+			// .setImageResource(R.drawable.image_mark_right);
+			// currentViewHolder.mark.setVisibility(View.VISIBLE);
+			// Log.d("MODE","0x22");
+			// break;
 
 		case 0x30:
 		case 0x31:
 		case 0x32:
-			// currentViewHolder.down.setVisibility(View.INVISIBLE);
 			currentViewHolder.down.setVisibility(View.INVISIBLE);
 			currentViewHolder.content.requestFocus();
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_right);
 			currentViewHolder.test.setAlpha(1);
-			currentViewHolder.test.setFocusable(false);
-			currentViewHolder.test.setFocusableInTouchMode(false);
-			currentViewHolder.test.setAlpha(1);// 开启下一单词
-			if (current_index == getCount()) {
-				saveWord();
-				index++;
-				notifyDataSetChanged();
+
+			if (current_index == mData.size()) {
+				Message msg = mMessageFactory.getMessage(Activity.RESULT_OK);
+				msg.sendToTarget();
 			}
+			Log.d("MODE", "0x32");
 			break;
 		}
 		hasNextStatus = false;
 	}
-
-	private long saveWord() {
-
-		String create_date = DateUtil.getCurrentDate();
-		RepertoryBean bean = new RepertoryBean();
-		bean.setTname("TT_RESOURCE_JP");
-		bean.setWid(((WordBean) mData.get(getCount() - 1)).getWid());
-		bean.setUid(sp.getString("USERNAME", null));
-		bean.setStatus("0");
-		bean.setCount_right(0);
-		bean.setCount_wrong(0);
-		bean.setCreate_date(create_date);
-		bean.setUpdate_date(create_date);
-		return DataHelpUtil.saveBeanData("TT_REPERTORY_JP", bean);
-	}
-
 	@Override
 	public int getCount() {
 		if (mData != null) {
-			return index;
+			return mData.size();
 		} else {
 			return 0;
 		}
-		// return count;
 	}
 
 	@Override
@@ -312,6 +311,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 		holder.mark.setOnLongClickListener(resetListener);
 		holder.test.setOnFocusChangeListener(focusListener);
 		holder.test.setHint(bean.getContent());
+		holder.test.setAlpha(0);;
 		holder.test.setNextFocusDownId(holder.content.getId());
 		container.addView(holder.all);
 		if (currentViewHolder == null) {
@@ -330,6 +330,9 @@ public class ViewPagerAdapter extends PagerAdapter implements
 	public void onPageSelected(int position) {
 		this.currentViewHolder = views.get(position);
 		this.current_index = position + 1;
+		Message msg = mMessageFactory.getMessage(Activity.RESULT_FIRST_USER);
+		msg.arg1 = current_index;
+		msg.sendToTarget();
 	}
 
 	@Override
@@ -347,7 +350,7 @@ public class ViewPagerAdapter extends PagerAdapter implements
 		EditText content;
 		LinearLayout down;
 		EditText test;
-		int mode = 0x00;
+		int level = 0x00;// 0x0*准备好，0x1*第一次，0x2*第二次，0x3*正确锁定。
 		int result = 0x02;// 0未写，1正确，2错误
 	}
 

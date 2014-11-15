@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.zhu.ttwords.R;
 import com.zhu.ttwords.bean.InformationBean;
 import com.zhu.ttwords.util.DataHelpUtil;
+import com.zhu.ttwords.value.SQLS;
 
 public class MainActivity extends Activity {
 
@@ -20,8 +21,8 @@ public class MainActivity extends Activity {
 	String username;
 	TextView learn;
 	TextView review;
-	String sql_count_relation;
 	String text_learn;
+	String text_mission;
 	private long firstTime = 0;
 
 	@Override
@@ -33,29 +34,47 @@ public class MainActivity extends Activity {
 		learn = (TextView) this.findViewById(R.id.activity_main_learn);
 		review = (TextView) this.findViewById(R.id.activity_main_review);
 
-		sql_count_relation = "SELECT count(*) AS 'COUNT' FROM TT_REPERTORY_JP WHERE UID = ?;";
-		InformationBean bean_info = null;
+		init();
+	}
+
+	private void init() {
+		InformationBean bean_all_count = null;
+		InformationBean bean_mission_count = null;
 		try {
-			bean_info = (InformationBean) DataHelpUtil.getSingleBean(
-					InformationBean.class, sql_count_relation,
+			bean_all_count = (InformationBean) DataHelpUtil.getSingleBean(
+					InformationBean.class, SQLS.Main_All_Count,
 					new String[] { username });
-			text_learn = bean_info.getCount();
+
+			bean_mission_count = (InformationBean) DataHelpUtil.getSingleBean(
+					InformationBean.class, SQLS.Main_Mission_Count,
+					new String[] { username });
+			text_learn = bean_all_count.getCount();
+			text_mission = bean_mission_count.getCount();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		learn.setText(text_learn);
+		review.setText(text_mission);
+
 	}
 
 	public void study(View v) {
 		Intent intent = new Intent(this, StudyActivity.class);
+		intent.putExtra("MISSION", text_mission);
 		startActivity(intent);
 	}
 
 	public void setting(View v) {
 		Intent intent = new Intent(this, SettingActivity.class);
 		startActivity(intent);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		init();
 	}
 
 	@Override

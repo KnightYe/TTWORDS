@@ -26,6 +26,7 @@ import com.zhu.ttwords.bean.UserBean;
 import com.zhu.ttwords.util.DataHelpUtil;
 import com.zhu.ttwords.util.DateUtil;
 import com.zhu.ttwords.value.DefaultSetting;
+import com.zhu.ttwords.value.SQLS;
 import com.zhu.ttwords.value.WHAT;
 
 public class LoadingActivity extends AbstractCommonActivity {
@@ -47,7 +48,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 	Long startTime = 0l;// 程序开始时间
 	Long endTime = 0l;// 载入完毕时间
 	TelephonyManager phoneMgr;
-	String sql_user;
 	String text_username;
 	String text_password;
 	String text_tel;
@@ -149,7 +149,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 	}
 
 	private void initInfo() {
-		sql_user = "SELECT* FROM TT_USER WHERE USERNAME = ? AND PASSWORD = ?;";
 		// 登录
 		text_username = sp.getString("USERNAME", "");
 		// 获取记录的用户名密码，如果有，则认为是老用户，如果没有，就认为第一次登录
@@ -168,7 +167,8 @@ public class LoadingActivity extends AbstractCommonActivity {
 		UserBean bean = null;
 		try {
 			bean = (UserBean) DataHelpUtil.getSingleBean(UserBean.class,
-					sql_user, new String[] { text_username, text_password });
+					SQLS.Loading_UserInfo, new String[] { text_username,
+							text_password });
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -176,7 +176,7 @@ public class LoadingActivity extends AbstractCommonActivity {
 		}
 		if (bean != null) {
 			Log.d("DEBUG", "login success");
-		
+
 			editor = sp.edit();
 			editor.putString("USERNAME", bean.getUsername());
 			editor.putString("PASSWORD", bean.getPassword());

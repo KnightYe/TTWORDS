@@ -5,7 +5,9 @@
     <dimen name="common_textsize_large">30sp</dimen>
     <dimen name="common_textsize_middle">20sp</dimen>
     <dimen name="common_textsize_small">16sp</dimen>
-    <dimen name="common_conner_small">6dip</dimen>
+    <dimen name="common_conner_small">6dp</dimen>
+    <dimen name="common_margin_LR">16dp</dimen>
+
     <!-- study -->
     <dimen name="activity_study_mao_height">200dp</dimen>
     <dimen name="activity_study_mao_width">150dp</dimen>
