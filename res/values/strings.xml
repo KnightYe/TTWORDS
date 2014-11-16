@@ -9,8 +9,9 @@
     <string name="activity_main_translate">翻译</string>
     <string name="activity_main_setting">设置</string>
     <string name="activity_main_lookback">查看成绩</string>
-    <string name="activity_main_learn">已掌握单词数：</string>
-    <string name="activity_main_reviews">待复习单词数：</string>
+    <string name="activity_main_learn">熟悉单词数：</string>
+    <string name="activity_main_reviews">今日任务数：</string>
+    <string name="activity_main_tomrow">明日任务数：</string>
     <!-- main activity -->
     <!-- loading activity -->
     <string name="activity_loading_info">加载中。。。</string>

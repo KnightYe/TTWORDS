@@ -60,7 +60,7 @@ public class CursorUtil {
 				Method m = bean.getClass().getMethod("get" + name);
 				String value = (String) m.invoke(bean);
 				values.put(name.toUpperCase(Locale.getDefault()), value);
-			} else if (type.equals("class java.lang.Float")) {
+			} else if (type.equals("float")) {
 				Method m = bean.getClass().getMethod("get" + name);
 				Float value = (Float) m.invoke(bean);
 				values.put(name.toUpperCase(Locale.getDefault()), value);

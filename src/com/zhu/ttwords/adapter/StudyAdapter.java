@@ -48,6 +48,7 @@ public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 	OnClickListener clearListener;
 	OnLongClickListener resetListener;
 	OnFocusChangeListener focusListener;
+	OnClickListener nextFocusListener;
 	ViewHolder currentViewHolder;
 	int current_index = 1;
 	boolean hasNextStatus = false;
@@ -84,6 +85,13 @@ public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 				}
 				currentViewHolder.result = RESULT_UNDO;
 				updateStatusAndMode();
+			}
+		};
+		this.nextFocusListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				currentViewHolder.content.requestFocus();
 			}
 		};
 		this.focusListener = new OnFocusChangeListener() {
@@ -151,6 +159,7 @@ public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 			currentViewHolder.content.setText(currentViewHolder.content
 					.getHint());
 			currentViewHolder.test.getText().clear();
+			currentViewHolder.test.setHint("");
 			currentViewHolder.test.setFocusable(true);
 			currentViewHolder.test.setFocusableInTouchMode(true);
 			currentViewHolder.test.requestFocus();
@@ -204,6 +213,7 @@ public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 			currentViewHolder.test.setFocusable(true);
 			currentViewHolder.test.setFocusableInTouchMode(true);
 			currentViewHolder.test.requestFocus();
+			currentViewHolder.test.setHint(currentViewHolder.content.getHint());
 			currentViewHolder.test.setAlpha(1);
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_attention);
@@ -253,6 +263,7 @@ public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 		}
 		hasNextStatus = false;
 	}
+
 	@Override
 	public int getCount() {
 		if (mData != null) {
@@ -304,14 +315,15 @@ public class StudyAdapter extends PagerAdapter implements OnPageChangeListener {
 		holder.explain.setText(bean.getExplain());
 		holder.pos.setText(bean.getPos());
 		holder.prono.setText(bean.getPronounce());
+		holder.prono.setOnClickListener(nextFocusListener);
 		holder.content.setHint(bean.getContent());
 		holder.content.setText(bean.getContent());
 		holder.content.setOnFocusChangeListener(focusListener);
 		holder.mark.setOnClickListener(clearListener);
 		holder.mark.setOnLongClickListener(resetListener);
 		holder.test.setOnFocusChangeListener(focusListener);
-		holder.test.setHint(bean.getContent());
-		holder.test.setAlpha(0);;
+		holder.test.setAlpha(0);
+		;
 		holder.test.setNextFocusDownId(holder.content.getId());
 		container.addView(holder.all);
 		if (currentViewHolder == null) {

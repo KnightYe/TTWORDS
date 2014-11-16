@@ -13,6 +13,15 @@ public class DateUtil {
 		return df.format(new Date());
 	}
 
+	public static String getTomrowDate() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+				Locale.getDefault());// 设置日期格式
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DATE, c.get(Calendar.DATE) + 1);
+		Date m6 = c.getTime();
+		return df.format(m6);
+	}
+
 	public static String getUpdateDate() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 				Locale.getDefault());// 设置日期格式

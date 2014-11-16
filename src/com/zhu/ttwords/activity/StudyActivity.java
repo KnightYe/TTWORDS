@@ -25,6 +25,7 @@ import com.zhu.ttwords.R;
 import com.zhu.ttwords.adapter.StudyAdapter;
 import com.zhu.ttwords.adapter.TestAdapter;
 import com.zhu.ttwords.bean.AbstractCommonBean;
+import com.zhu.ttwords.bean.InformationBean;
 import com.zhu.ttwords.bean.WordBean;
 import com.zhu.ttwords.util.DataHelpUtil;
 import com.zhu.ttwords.util.DateUtil;
@@ -64,11 +65,23 @@ public class StudyActivity extends AbstractCommonActivity {
 	}
 
 	private void initData() {
+		String mission;
+		InformationBean bean_mission_count = null;
 		// 初始化数据
-		Intent intent = getIntent();
-		String mission = intent.getStringExtra("MISSION");
 		sp = getSharedPreferences("setting", MODE_PRIVATE);
 		username = sp.getString("USERNAME", null);
+
+		try {
+			bean_mission_count = (InformationBean) DataHelpUtil.getSingleBean(
+					InformationBean.class, SQLS.Main_Mission_Count,
+					new String[] { username, DateUtil.getCurrentDate() });
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		}
+
+		mission = bean_mission_count.getCount();
 		if (!mission.equals("0")) {
 			// 复习模式数据
 			isReviewNotStudy = true;
@@ -127,8 +140,8 @@ public class StudyActivity extends AbstractCommonActivity {
 
 		studyComplateDialog = new AlertDialog.Builder(this)
 				.setIcon(R.drawable.ic_launcher)
-				.setTitle("：完成学习？")
-				.setItems(new String[] { "·开始测试", "·完成学习", "·再看一会" },
+				.setTitle("进行测试才能保留学习成果哦，亲！")
+				.setItems(new String[] { "● 开始测试", "● 结束学习", "● 再看一会" },
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog,
@@ -157,34 +170,37 @@ public class StudyActivity extends AbstractCommonActivity {
 					testComplateDialog = new AlertDialog.Builder(
 							StudyActivity.this)
 							.setIcon(R.drawable.ic_launcher)
-							.setTitle("：完成测试？")
-							.setMessage(
-									"正确数："
-											+ test_right
-											+ "\n错误数："
-											+ (test_total - test_right)
-											+ "\n正确率："
-											+ (test_right * 1.0 / test_total * 1.0)
-											+ "%")
-							.setPositiveButton("完成测试",
+							.setTitle("没复习完就不能学习新词哦，么么哒！")
+							.setItems(
+									new String[] {
+											"正确数："
+													+ test_right
+													+ "\n错误数："
+													+ (test_total - test_right)
+													+ "\n正确率："
+													+ (test_right * 1.0
+															/ test_total * 100.0)
+													+ "%", "● 新的测试", "● 结束测试" },
 									new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(
 												DialogInterface dialog,
 												int which) {
-											StudyActivity.this.finish();
+											switch (which) {
+											case 0:
+												testComplateDialog.dismiss();
+												break;
+											case 1:
+												initData();
+												testMode();
+												break;
+											case 2:
+												StudyActivity.this.finish();
+												break;
+											}
 										}
-									})
-							.setNeutralButton("错词重测",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											initData();
-											testMode();
-										}
-									}).setNegativeButton("让我改改", null).create();
+									}).create();
+
 					testComplateDialog.show();
 				}
 			}
@@ -198,7 +214,7 @@ public class StudyActivity extends AbstractCommonActivity {
 		viewPager.setAdapter(testAdapter);
 		viewPager.setOnPageChangeListener(testAdapter);
 		index_total.setText(1 + "/" + mData.size());
-		showMode.setText("测验模式");
+		showMode.setText("测试模式");
 		isStudyNotTest = false;
 	}
 

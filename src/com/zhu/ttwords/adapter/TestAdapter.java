@@ -35,9 +35,10 @@ import com.zhu.ttwords.value.SQLS;
 public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 
 	public static final int RESULT_UNDO = 0x00;
-	public static final int RESULT_WRONG = 0x01;
-	public static final int RESULT_RIGHT = 0x02;
-	public static final int RESULT_LOCK = 0x03;
+	public static final int RESULT_DOING = 0x01;
+	public static final int RESULT_WRONG = 0x02;
+	public static final int RESULT_RIGHT = 0x03;
+	public static final int RESULT_LOCK = 0x04;
 	SharedPreferences sp;
 	List<AbstractCommonBean> mData;
 	Context mContext;
@@ -87,6 +88,9 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 				if (v == currentViewHolder.content) {
 					switch (currentViewHolder.result) {
 					case RESULT_UNDO:
+						break;
+					case RESULT_DOING:
+
 						CharSequence question = currentViewHolder.test
 								.getHint().toString().trim();
 						CharSequence answer = currentViewHolder.test.getText()
@@ -103,9 +107,12 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 				} else if (v == currentViewHolder.test) {
 					switch (currentViewHolder.result) {
 					case RESULT_UNDO:
+						currentViewHolder.result = RESULT_DOING;
+						break;
+					case RESULT_DOING:
 						break;
 					case RESULT_WRONG:
-						currentViewHolder.result = RESULT_UNDO;
+						currentViewHolder.result = RESULT_DOING;
 						break;
 					case RESULT_RIGHT:
 						currentViewHolder.result = RESULT_LOCK;
@@ -121,6 +128,15 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 		this.hasNextStatus = true;
 		switch (currentViewHolder.result) {
 		case RESULT_UNDO:
+			currentViewHolder.content.setVisibility(View.INVISIBLE);
+			currentViewHolder.test.requestFocus();
+			currentViewHolder.test.getText().clear();
+			currentViewHolder.mark.setVisibility(View.VISIBLE);
+			currentViewHolder.mark
+					.setImageResource(R.drawable.image_mark_attention);
+			break;
+		case RESULT_DOING:
+			currentViewHolder.content.setVisibility(View.VISIBLE);
 			currentViewHolder.test.requestFocus();
 			currentViewHolder.test.getText().clear();
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
@@ -128,6 +144,7 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 					.setImageResource(R.drawable.image_mark_attention);
 			break;
 		case RESULT_WRONG:
+			currentViewHolder.content.setVisibility(View.VISIBLE);
 			currentViewHolder.content.requestFocus();
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
 			currentViewHolder.mark
@@ -135,14 +152,19 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 			saveWord(RESULT_WRONG);
 			break;
 		case RESULT_RIGHT:
+			currentViewHolder.content.setVisibility(View.VISIBLE);
 			currentViewHolder.content.requestFocus();
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
 			currentViewHolder.mark
 					.setImageResource(R.drawable.image_mark_right);
 			Log.d("DEBUG", "RESULT_RIGHT");
+			testRight++;
+			Message msg = mMessageFactory.getMessage(Activity.RESULT_OK);
+			msg.sendToTarget();
 			saveWord(RESULT_RIGHT);
 			break;
 		case RESULT_LOCK:
+			currentViewHolder.content.setVisibility(View.VISIBLE);
 			currentViewHolder.content.requestFocus();
 			currentViewHolder.mark.setVisibility(View.VISIBLE);
 			currentViewHolder.mark
@@ -155,9 +177,9 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 	}
 
 	private long saveWord(int result) {
-		testRight++;
 		WordBean bean_word = (WordBean) mData.get(current_index - 1);
 		RepertoryBean bean = null;
+		Long returnLong;
 		try {
 			bean = (RepertoryBean) DataHelpUtil.getSingleBean(
 					RepertoryBean.class, SQLS.Study_getResource,
@@ -183,15 +205,19 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 				bean.setUpdate_date(create_date);
 			} else {
 				bean.setLevel(3);
-				bean.setCountn(1);
+				bean.setCountn(0);
 				bean.setCountw(0);
 				int day = SuperMeMoUtil.getDay(bean.getEf(),
 						bean.getCountn() + 1);
 				String update_date = DateUtil.getUpdateDate(day);
 				bean.setUpdate_date(update_date);
 			}
-
-			return DataHelpUtil.saveBeanData("TT_REPERTORY_JP", bean);
+			bean.setEf(SuperMeMoUtil.getEM(bean.getEf(), bean.getLevel()));
+			if (bean.getLevel() < 3) {
+				bean.setCountn(0);
+			}
+			returnLong = DataHelpUtil.saveBeanData("TT_REPERTORY_JP", bean);
+			return returnLong;
 		} else {
 			bean.setCountall(bean.getCountall() + 1);
 			int day = SuperMeMoUtil.getDay(bean.getEf(), bean.getCountn() + 1);
@@ -205,11 +231,12 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 			bean.setEf(SuperMeMoUtil.getEM(bean.getEf(), bean.getLevel()));
 			bean.setCountn(bean.getCountn() + 1);
 			if (bean.getLevel() < 3) {
-				bean.setCountn(1);
+				bean.setCountn(0);
 			}
-			return DataHelpUtil.updateBeanData("TT_REPERTORY_JP", bean,
+			returnLong = DataHelpUtil.updateBeanData("TT_REPERTORY_JP", bean,
 					SQLS.Study_updateWordInfo, new String[] { "TT_RESOURCE_JP",
-							bean.getUid() });
+							bean.getWid() + "" });
+			return returnLong;
 		}
 	}
 
@@ -264,6 +291,7 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 		holder.pos.setText(bean.getPos());
 		holder.content.setOnFocusChangeListener(focusListener);
 		holder.content.setAlpha(0);
+		holder.content.setVisibility(View.INVISIBLE);
 		holder.test.setHint(bean.getContent());
 		holder.test.setHintTextColor(0x06000000);
 		holder.test.setOnFocusChangeListener(focusListener);

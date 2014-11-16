@@ -24,6 +24,15 @@
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_study_marge_large" >
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+
+            <requestFocus />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/view_study_viewpager_explain"
             android:layout_width="wrap_content"
@@ -44,11 +53,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:padding="@dimen/activity_study_padding" >
-
-            <requestFocus />
 
             <EditText
                 android:id="@+id/view_study_viewpager_test"
@@ -78,21 +83,16 @@
                     android:singleLine="true"
                     android:textSize="@dimen/common_textsize_middle" />
 
-                <FrameLayout
+                <EditText
+                    android:id="@+id/view_study_viewpager_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_study_padding" >
-
-                    <EditText
-                        android:id="@+id/view_study_viewpager_content"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:nextFocusDown="@id/view_study_viewpager_test"
-                        android:singleLine="true"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/common_textsize_middle" />
-                </FrameLayout>
+                    android:inputType="text"
+                    android:nextFocusDown="@id/view_study_viewpager_test"
+                    android:padding="@dimen/activity_study_padding"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/common_textsize_middle" />
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>

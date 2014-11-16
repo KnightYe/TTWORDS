@@ -9,8 +9,8 @@
     <dimen name="common_margin_LR">16dp</dimen>
 
     <!-- study -->
-    <dimen name="activity_study_mao_height">200dp</dimen>
-    <dimen name="activity_study_mao_width">150dp</dimen>
+    <dimen name="activity_study_mao_height">160dp</dimen>
+    <dimen name="activity_study_mao_width">120dp</dimen>
     <dimen name="activity_study_marge_large">80dp</dimen>
     <dimen name="activity_study_padding">12dp</dimen>
 
