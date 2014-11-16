@@ -61,37 +61,38 @@
         </GridLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:columnCount="2"
+        android:rowCount="3" >
 
         <Button
             android:id="@+id/activity_main_study"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
             android:background="@drawable/background_common_button"
             android:onClick="study"
             android:text="@string/activity_main_stady" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
             android:background="@drawable/background_common_button"
             android:text="@string/activity_main_lookback" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="fill_horizontal"
             android:background="@drawable/background_common_button"
             android:text="@string/activity_main_translate" />
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
             android:background="@drawable/background_common_button"
             android:onClick="setting"
             android:text="@string/activity_main_setting" />
-    </LinearLayout>
+    </GridLayout>
 
 </LinearLayout>
