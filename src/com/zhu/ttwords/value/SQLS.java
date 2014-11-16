@@ -30,4 +30,8 @@ public class SQLS {
 	public static final String Study_getResource = "SELECT* FROM TT_REPERTORY_JP WHERE WID= ?;";
 
 	public static final String Study_updateWordInfo = "TNAME = ? AND WID = ?";
+	/**
+	 * Setting
+	 */
+	public static final String Setting_SelectUserBean = "SELECT * FROM TT_USER WHERE USERNAME = ?;";
 }

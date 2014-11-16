@@ -36,7 +36,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 	Editor editor;
 	Runnable readDB;// 读取数据库线程
 	Animation rotateAnimation;
-	Animation hideAnimation;
 	ImageView image;// 载入图片
 	TextView loading_text;// 状态说明文字
 	EditText user_tel;
@@ -81,8 +80,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 				.findViewById(R.id.activity_loading_regeist);
 		this.rotateAnimation = AnimationUtils.loadAnimation(
 				LoadingActivity.this, R.anim.loading_animation);
-		this.hideAnimation = AnimationUtils.loadAnimation(LoadingActivity.this,
-				R.anim.show_login_animation);
 		this.submitListener = new OnClickListener() {
 
 			@Override
@@ -233,7 +230,6 @@ public class LoadingActivity extends AbstractCommonActivity {
 			break;
 		case RESULT_FIRST_USER:
 			rotateAnimation.cancel();
-			image.startAnimation(hideAnimation);
 			image.setVisibility(View.INVISIBLE);
 			loading_text.setVisibility(View.INVISIBLE);
 			break;

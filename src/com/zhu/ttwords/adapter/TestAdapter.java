@@ -159,8 +159,10 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 					.setImageResource(R.drawable.image_mark_right);
 			Log.d("DEBUG", "RESULT_RIGHT");
 			testRight++;
-			Message msg = mMessageFactory.getMessage(Activity.RESULT_OK);
-			msg.sendToTarget();
+			if (current_index == mData.size()) {
+				Message msg = mMessageFactory.getMessage(Activity.RESULT_OK);
+				msg.sendToTarget();
+			}
 			saveWord(RESULT_RIGHT);
 			break;
 		case RESULT_LOCK:

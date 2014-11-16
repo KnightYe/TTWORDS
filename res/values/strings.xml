@@ -4,8 +4,6 @@
     <!-- main activity -->
     <string name="app_name">天天背单词</string>
     <string name="activity_main_stady">背单词</string>
-    <string name="activity_main_review">复习</string>
-    <string name="activity_main_test">测试</string>
     <string name="activity_main_translate">翻译</string>
     <string name="activity_main_setting">设置</string>
     <string name="activity_main_lookback">查看成绩</string>
@@ -19,14 +17,16 @@
     <string name="activity_loading_regeist">一键注册</string>
     <string name="activity_loading_waring">用户名或密码不匹配。</string>
     <!-- loading activity -->
+    <!-- studys activity -->
+    <string name="activity_study_mode">学习模式</string>
+    <!-- studys activity -->
+    <!-- setting activity -->
+    <string name="title_activity_setting">设置</string>
+    <!-- setting activity -->
     <!-- image  contentDescription -->
     <string name="image_user_photo">头像</string>
     <string name="image_mao">猫猫</string>
     <string name="image_loading">注意</string>
     <!-- image  contentDescription -->
-
-    <string name="title_activity_setting">SettingActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 
 </resources>

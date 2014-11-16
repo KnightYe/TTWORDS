@@ -4,13 +4,19 @@
     android:layout_height="match_parent"
     tools:context="com.zhu.ttwords.activity.StudyActivity" >
 
+    <FrameLayout
+        android:id="@+id/view_study_viewpager_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" >
+    </FrameLayout>
+
     <ImageView
         android:id="@+id/view_study_viewpager_mark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/view_study_viewpager_all"
+        android:layout_alignLeft="@+id/view_study_viewpager_center"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/activity_study_marge_large"
         android:contentDescription="@string/image_mao"
         android:src="@drawable/image_mark_attention"
         android:visibility="invisible" />
@@ -53,7 +59,8 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="@dimen/activity_study_padding" >
+            android:paddingLeft="@dimen/activity_study_padding"
+            android:paddingRight="@dimen/activity_study_padding" >
 
             <EditText
                 android:id="@+id/view_study_viewpager_test"

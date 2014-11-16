@@ -180,7 +180,8 @@ public class StudyActivity extends AbstractCommonActivity {
 													+ "\n正确率："
 													+ (test_right * 1.0
 															/ test_total * 100.0)
-													+ "%", "● 新的测试", "● 结束测试" },
+													+ "%", "● 新的测试", "● 回去学习",
+											"● 结束测试" },
 									new DialogInterface.OnClickListener() {
 										@Override
 										public void onClick(
@@ -195,6 +196,10 @@ public class StudyActivity extends AbstractCommonActivity {
 												testMode();
 												break;
 											case 2:
+												initData();
+												studyMode();
+												break;
+											case 3:
 												StudyActivity.this.finish();
 												break;
 											}
@@ -218,6 +223,16 @@ public class StudyActivity extends AbstractCommonActivity {
 		isStudyNotTest = false;
 	}
 
+	private void studyMode() {
+		studyAdapter = new StudyAdapter(StudyActivity.this, mData,
+				StudyActivity.this);
+		viewPager.setAdapter(studyAdapter);
+		viewPager.setOnPageChangeListener(studyAdapter);
+		index_total.setText(1 + "/" + mData.size());
+		showMode.setText("学习模式");
+		isStudyNotTest = true;
+	}
+
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		switch (keyCode) {
@@ -236,11 +251,8 @@ public class StudyActivity extends AbstractCommonActivity {
 			index_total.setText(index + "/" + mData.size());
 			break;
 		case RESULT_OK:
-			if (isStudyNotTest) {
-				studyComplateDialog.show();
-			} else {
-				testComplateDialog.show();
-			}
+			mao.performClick();
+			break;
 		}
 		return false;
 	}
