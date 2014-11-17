@@ -167,19 +167,21 @@ public class StudyActivity extends AbstractCommonActivity {
 				} else {
 					test_right = testAdapter.testRight;
 					test_total = mData.size();
+					// java.text.DecimalFormat df = new java.text.DecimalFormat(
+					// "#.##");
+					// String test_percent = df.format(test_right * 1.0
+					// / test_total * 100.0);
+					String test_percent = String.format("%.2f", (test_right
+							* 1.0 / test_total * 100.0));
 					testComplateDialog = new AlertDialog.Builder(
 							StudyActivity.this)
 							.setIcon(R.drawable.ic_launcher)
 							.setTitle("没复习完就不能学习新词哦，么么哒！")
 							.setItems(
 									new String[] {
-											"正确数："
-													+ test_right
-													+ "\n错误数："
+											"正确数：" + test_right + "\n错误数："
 													+ (test_total - test_right)
-													+ "\n正确率："
-													+ (test_right * 1.0
-															/ test_total * 100.0)
+													+ "\n正确率：" + test_percent
 													+ "%", "● 新的测试", "● 回去学习",
 											"● 结束测试" },
 									new DialogInterface.OnClickListener() {
