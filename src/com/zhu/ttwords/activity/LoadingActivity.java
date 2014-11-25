@@ -20,14 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zhu.ttwords.R;
-import com.zhu.ttwords.TTWORDS;
-import com.zhu.ttwords.bean.InformationBean;
 import com.zhu.ttwords.bean.UserBean;
 import com.zhu.ttwords.util.DataHelpUtil;
 import com.zhu.ttwords.util.DateUtil;
 import com.zhu.ttwords.value.DefaultSetting;
 import com.zhu.ttwords.value.SQLS;
-import com.zhu.ttwords.value.WHAT;
 
 public class LoadingActivity extends AbstractCommonActivity {
 
