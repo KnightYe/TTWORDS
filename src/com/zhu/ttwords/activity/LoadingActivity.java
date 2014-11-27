@@ -28,7 +28,7 @@ import com.zhu.ttwords.value.SQLS;
 
 public class LoadingActivity extends AbstractCommonActivity {
 
-	public static final Long loadTime = 1500l;
+	public static final Long loadTime = 2000l;
 	SharedPreferences sp;
 	Editor editor;
 	Runnable readDB;// 读取数据库线程

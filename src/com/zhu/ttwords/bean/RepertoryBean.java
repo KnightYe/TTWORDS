@@ -5,10 +5,10 @@ public class RepertoryBean extends AbstractCommonBean {
 	int wid;
 	String uid;
 	int countw;
-	int countall;
-	int countn;
-	int level;
-	float ef;
+	int countall;//测试次数
+	int countn;//supermemo中的学习次数
+	int level;//supermemo中的熟悉等级
+	float ef;//supermemo中的记忆系数
 	String create_date;
 	String update_date;
 

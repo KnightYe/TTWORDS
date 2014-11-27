@@ -208,7 +208,7 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 			} else {
 				bean.setLevel(3);
 				bean.setCountn(0);
-				bean.setCountw(0);
+				bean.setCountw(0);// 错误计数
 				int day = SuperMeMoUtil.getDay(bean.getEf(),
 						bean.getCountn() + 1);
 				String update_date = DateUtil.getUpdateDate(day);
@@ -218,15 +218,16 @@ public class TestAdapter extends PagerAdapter implements OnPageChangeListener {
 			if (bean.getLevel() < 3) {
 				bean.setCountn(0);
 			}
+			bean.setCountn(1);
 			returnLong = DataHelpUtil.saveBeanData("TT_REPERTORY_JP", bean);
 			return returnLong;
 		} else {
-			bean.setCountall(bean.getCountall() + 1);
+			bean.setCountall(bean.getCountall() + 1);// 测试总数加一
 			int day = SuperMeMoUtil.getDay(bean.getEf(), bean.getCountn() + 1);
 			bean.setUpdate_date(DateUtil.getUpdateDate(day));
 			if (result == RESULT_WRONG) {
 				bean.setCountw(bean.getCountw() + 1);
-				bean.setLevel(bean.getLevel() >= 5 ? 5 : bean.getLevel() - 1);
+				bean.setLevel(bean.getLevel() <= 0 ? 0 : bean.getLevel() - 1);
 			} else {
 				bean.setLevel(bean.getLevel() >= 5 ? 5 : bean.getLevel() + 1);
 			}
