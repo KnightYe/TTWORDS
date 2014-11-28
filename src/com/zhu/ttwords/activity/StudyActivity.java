@@ -1,25 +1,25 @@
 package com.zhu.ttwords.activity;
 
 import java.util.List;
+import java.util.Locale;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.v4.view.PagerAdapter;
+import android.provider.Settings;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zhu.ttwords.R;
 import com.zhu.ttwords.adapter.StudyAdapter;
@@ -116,6 +116,29 @@ public class StudyActivity extends AbstractCommonActivity {
 	}
 
 	private void initUI() {
+		InputMethodManager immanager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		List<InputMethodInfo> list = immanager.getEnabledInputMethodList();
+		String defaultIme = Settings.Secure
+				.getString(this.getContentResolver(),
+						Settings.Secure.DEFAULT_INPUT_METHOD);
+		InputMethodInfo default_info = null;
+		boolean hasJPInpute = false;
+		for (InputMethodInfo inputMethodInfo : list) {
+			if (inputMethodInfo.getId().equals(defaultIme)) {
+				default_info = inputMethodInfo;
+			}
+
+			if (!(inputMethodInfo.getSubtypeCount() > 0 && inputMethodInfo
+					.getSubtypeAt(0).getLocale()
+					.equals(Locale.JAPAN.toString()))) {
+				hasJPInpute = true;
+			}
+		}
+		if (default_info != null && hasJPInpute) {
+			immanager.showInputMethodPicker();
+		} else {
+			Toast.makeText(this, "请安装日语输入法", Toast.LENGTH_SHORT);
+		}
 		// 初始化UI
 		index_total = (TextView) this
 				.findViewById(R.id.activity_study_index_total);
